@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard · RRHH</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+    .brand-logo{height:42px !important;max-height:42px !important;width:auto !important;max-width:320px !important;display:block}
+
+    /* Dashboard: subhead en una fila con Recargar a la derecha */
+    /* Dashboard: botones con ícono (igual a Flags) */
+    body[data-page="dashboard"] .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    body[data-page="dashboard"] .btn .ico{
+      width:16px;
+      height:16px;
+      flex:0 0 16px;
+    }
+
+    .dash-subhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .dash-subhead-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .dash-subhead-right{display:flex;align-items:center;gap:10px;flex:0 0 auto;justify-content:flex-end;}
+
+    /* Evitar que el botón Imprimir se "salga" del body */
+    body[data-page="dashboard"] .page-actions{max-width:100%;flex-wrap:wrap}
+
+    /* Chart.js wrapper */
+    .chart-wrap{ position:relative; width:100%; height:520px; }
+    @media (max-width:1100px){ .chart-wrap{ height:480px; } }
+    @media (max-width:760px){ .chart-wrap{ height:420px; } }
+    .chart-wrap canvas{ position:absolute; inset:0; width:100% !important; height:100% !important; }
+
+    .dash-chart-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    .dash-chart-head .muted{ font-size:12px; font-weight:700; color:#64748b; }
+  
+    /* Abajo: 3 columnas (Completas / Gerencias / Sucursales) */
+    .dash-bottom-3{ display:grid; grid-template-columns: 1.4fr 1.15fr 1fr; gap:12px; }
+    @media (max-width: 1200px){ .dash-bottom-3{ grid-template-columns: 1fr 1fr; } .dash-bottom-3 > section:first-child{ grid-column: span 2; } }
+    @media (max-width: 980px){ .dash-bottom-3{ grid-template-columns: 1fr; } .dash-bottom-3 > section:first-child{ grid-column: auto; } }
+
+  
+    /* Graficos (selector arriba) */
+    .dash-subhead-right{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:flex-end; }
+    .dash-goto{ display:flex; align-items:center; gap:10px; }
+    .dash-goto-label{ font-weight:800; color:#0f172a; white-space:nowrap; }
+    .dash-goto-select{ min-width: 190px; }
+
+    /* Dashboard: acciones a la derecha (filtros + imprimir) */
+body[data-page="dashboard"] .page-actions{ display:flex; align-items:center; justify-content:flex-start; gap:10px; flex-wrap:wrap; }
+body[data-page="dashboard"] .dash-goto-select{ min-width: 200px; }
+
+
+
+    /* FIX: 2 líneas en el header del Dashboard
+       - Línea 1: Año/Estado/Recargar (izq) + Graficos (der)
+       - Línea 2: filtros + Imprimir (alineados a la derecha)
+    */
+    body[data-page="dashboard"] .page-head{ flex-direction: column; align-items: stretch; }
+    body[data-page="dashboard"] .page-actions{ justify-content: flex-start; flex-wrap: wrap; }
+
+
+    /* Row split: dar más ancho al gráfico izquierdo y achicar el de la derecha */
+    .dash-row-split{ display:grid; grid-template-columns: 1.55fr .75fr; gap:12px; }
+    @media (max-width: 980px){ .dash-row-split{ grid-template-columns: 1fr; } }
+
+
+    /* ===== Dashboard: Filtros estilo Inicio (pastilla) + SIN flecha ===== */
+    body[data-page="dashboard"] .page-actions .field.inline,
+    body[data-page="dashboard"] .page-actions label.inline{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      height:42px;
+      padding:6px 12px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+    }
+
+    body[data-page="dashboard"] .page-actions .field.inline > span,
+    body[data-page="dashboard"] .page-actions label.inline > span{
+      margin:0;
+      font-size:.86rem;
+      font-weight:800;
+      color:#334155;
+      white-space:nowrap;
+    }
+
+    /* Selects dentro de la pastilla: sin flecha */
+    body[data-page="dashboard"] .page-actions select.select,
+    body[data-page="dashboard"] .dash-goto select.select{
+      height:28px;
+      border:none;
+      outline:none;
+      background:transparent;
+
+      padding:0 6px 0 2px;
+      font-weight:800;
+      color:var(--text);
+
+      appearance:none;
+      -webkit-appearance:none;
+      -moz-appearance:none;
+
+      background-image:none !important;
+      background-repeat:no-repeat;
+      background-position:right 6px center;
+      background-size:0;
+      cursor:pointer;
+    }
+    body[data-page="dashboard"] .page-actions select.select::-ms-expand,
+    body[data-page="dashboard"] .dash-goto select.select::-ms-expand{ display:none; }
+
+    /* Input año dentro de la pastilla */
+    body[data-page="dashboard"] .page-actions .anio{
+      height:28px;
+      border:none;
+      outline:none;
+      background:transparent;
+      padding:0 2px;
+      font-weight:800;
+      color:var(--text);
+      width:90px;
+    }
+
+    /* Foco “lindo” al interactuar */
+    body[data-page="dashboard"] .page-actions .field.inline:focus-within,
+    body[data-page="dashboard"] .page-actions label.inline:focus-within,
+    body[data-page="dashboard"] .dash-goto:focus-within{
+      border-color: rgba(30,58,137,.55);
+      box-shadow: 0 0 0 3px rgba(30,58,137,.14);
+    }
+
+    /* Graficos => convertir a pastilla tipo Inicio */
+    body[data-page="dashboard"] .dash-goto{
+      height:42px;
+      padding:6px 12px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+    }
+    body[data-page="dashboard"] .dash-goto-label{
+      font-size:.86rem;
+      font-weight:800;
+      color:#334155;
+    }
+
+</style>
+</head>
+
+<body data-page="dashboard">
+  <main class="container">
+    <section class="card" aria-labelledby="t">
+<div class="page-head">
+  <div>
+    <h1 class="page-title" id="t">Dashboard</h1>
+    <div class="subhead dash-subhead">
+      <div class="dash-subhead-left">
+        <span class="pill">Año: <span id="dAnioLabel">2026</span></span>
+        <span class="pill">Estado: <span id="dState">—</span></span>
+        <button id="dReload" class="btn" type="button" title="Recargar datos"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5a5 5 0 1 1-9.9-1h-2.02A7 7 0 1 0 12 6z"/></svg><span>Recargar</span></button>
+        <button id="dPrint" class="btn btn-primary" type="button" title="Imprimir / Guardar como PDF"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 9V3h12v6H6zm10-4H8v2h8V5z"/><path fill="currentColor" d="M6 19v-4H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2v4H6zm2-2h8v-4H8v4z"/></svg><span>Imprimir</span></button>
+      </div>
+      <div class="dash-subhead-right">
+        <div class="dash-goto" aria-label="Graficos">
+          <span class="dash-goto-label">Gráficos =&gt;</span>
+          <select id="dGoto" class="select dash-goto-select" aria-label="Ir a grafico">
+            <option value="">Ir a...</option>
+            <option value="secMetrics">Métricas</option>
+            <option value="secBarsGerencia">Barras: Gerencia</option>
+            <option value="secBarsSucursal">Barras: Sucursal</option>
+            <option value="secItemsEval">Resultados por ítem</option>
+            <option value="secItemsCP">C.P. por ítem</option>
+            <option value="secLowEval">Alertas: Eval (Bajo Normal)</option>
+            <option value="secLowCp">Alertas: C.P. (Bajo Normal)</option>
+            <option value="secBottomCompletas">Completas</option>
+            <option value="secBottomGerencias">Gerencias</option>
+            <option value="secBottomSucursales">Sucursales</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-actions">
+    <label class="field inline">
+      <span>Gerencia</span>
+      <select id="dGerencia" class="select">
+        <option value="">Todas</option>
+      </select>
+    </label>
+
+    <label class="field inline">
+      <span>Sucursal</span>
+      <select id="dSucursal" class="select">
+        <option value="">Todas</option>
+      </select>
+    </label>
+
+    <label class="field inline">
+      <span>Estado</span>
+      <select id="dEstado" class="select">
+        <option value="">Todos</option>
+        <option value="Completa">Completa</option>
+        <option value="Pendiente">Pendiente</option>
+      </select>
+    </label>
+
+    <label class="inline">
+      <span>Año</span>
+      <input id="dAnio" class="anio" type="number" min="2000" max="2100" value="2026" />
+    </label>
+
+    
+  </div>
+</div>
+
+      <!-- Tarjetas principales (alineadas a los conteos de Elegibilidad / Listados) -->
+      <div class="dash-metrics" id="secMetrics" aria-label="Métricas">
+        <!-- Elegibilidad -->
+        <div class="metric-card">
+          <div class="metric-title">Activos</div>
+          <div id="mActivos" class="metric-value">0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Evaluación</div>
+          <div id="mElegEval" class="metric-value">0</div>
+          <div class="metric-sub"><span id="mElegEvalPct">0%</span> de Activos</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Compromiso y Presentismo (C.P.)</div>
+          <div id="mElegCp" class="metric-value">0</div>
+          <div class="metric-sub"><span id="mElegCpPct">0%</span> de Activos</div>
+        </div>
+
+        <!-- Asignaciones -->
+        <div class="metric-card">
+          <div class="metric-title">Asignaciones</div>
+          <div id="mAsig" class="metric-value">0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Empleados a Evaluar</div>
+          <div id="mEmpEval" class="metric-value">0</div>
+          <div class="metric-sub"><span id="mEmpEvalPct">0%</span> de elegibles</div>
+        </div>
+        <div class="metric-card metric-click" id="dCardSinAsig" role="button" tabindex="0" aria-label="Ver detalle de empleados sin asignación">
+  <div class="metric-title">Sin asignación</div>
+  <div id="mSinAsig" class="metric-value">0</div>
+  <div class="metric-sub"><span id="mSinAsigPct">0%</span> de elegibles</div>
+</div>
+
+        <!-- Evaluaciones -->
+        <div class="metric-card">
+          <div class="metric-title">Evaluaciones</div>
+          <div id="mEvalTotal" class="metric-value">0</div>
+        </div>
+        <div class="metric-card metric-ok metric-click-ok" id="dCardCompletas" role="button" tabindex="0" aria-label="Ver detalle de empleados con evaluación completa">
+          <div class="metric-title">Completas</div>
+          <div id="mEvalOk" class="metric-value">0</div>
+          <div class="metric-sub"><span id="mEvalOkPct">0%</span> de evaluaciones</div>
+        </div>
+        <div class="metric-card metric-pend">
+          <div class="metric-title">Pendientes</div>
+          <div id="mEvalPend" class="metric-value">0</div>
+          <div class="metric-sub"><span id="mEvalPendPct">0%</span> de evaluaciones</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Puntaje Promedio</div>
+          <div id="mAvgPuntaje" class="metric-value">—</div>
+          </div>
+      </div>
+
+      <div class="dash-grid" style="margin-top:14px">
+        <section class="card" id="secBarsGerencia">
+          <h2>Gerencia</h2>
+          <div id="dBarsGerencia"></div>
+        </section>
+
+        <section class="card" id="secBarsSucursal">
+          <h2>Sucursal</h2>
+          <div id="dBarsSucursal"></div>
+        </section>
+
+        
+
+        <!-- Distribución por ítem (Resultados) -->
+        <section class="card dash-span-2" id="secItemsEval" aria-label="Distribución por ítem">
+          <div class="dash-chart-head">
+            <h2 style="margin:0;">Resultados por ítem</h2>
+            <div class="muted" id="dItemsChartMeta">—</div>
+          </div>
+          <div class="chart-wrap" style="margin-top:10px;">
+            <canvas id="dItemsChart" role="img" aria-label="Distribución por ítem"></canvas>
+          </div>
+          <div id="dItemsChartEmpty" class="muted" style="display:none; margin-top:10px;">No hay respuestas para mostrar con los filtros actuales.</div>
+        </section>
+
+
+        <!-- Distribución por ítem (C.P.) -->
+        <section class="card dash-span-2" id="secItemsCP" aria-label="Distribución por ítem C.P.">
+          <div class="dash-chart-head">
+            <h2 style="margin:0;">C.P. por ítem</h2>
+            <div class="muted" id="dCpItemsChartMeta">—</div>
+          </div>
+          <div class="chart-wrap" style="margin-top:10px; height:360px;">
+            <canvas id="dCpItemsChart" role="img" aria-label="Distribución C.P. por ítem"></canvas>
+          </div>
+          <div id="dCpItemsChartEmpty" class="muted" style="display:none; margin-top:10px;">No hay datos de C.P. para mostrar con los filtros actuales.</div>
+        </section>
+
+        <!-- Alertas (solo "Bajo Normal", ponderado) -->
+        <div class="dash-span-2 dash-row-split" id="secLowWrap" aria-label="Alertas Bajo Normal">
+          <section class="card" id="secLowEval" aria-label="Alertas Bajo Normal - Evaluaciones">
+            <div class="dash-chart-head">
+              <h2 style="margin:0;">Alertas (Bajo Normal) · Evaluaciones</h2>
+              <div class="muted" id="dLowEvalMeta">—</div>
+            </div>
+            <div class="chart-wrap" style="margin-top:10px; height:320px;">
+              <canvas id="dLowEvalChart" role="img" aria-label="Alertas Bajo Normal - Evaluaciones"></canvas>
+            </div>
+            <div id="dLowEvalEmpty" class="muted" style="display:none; margin-top:10px;">No hay "Bajo Normal" para mostrar con los filtros actuales.</div>
+          </section>
+
+          <section class="card" id="secLowCp" aria-label="Alertas Bajo Normal - C.P.">
+            <div class="dash-chart-head">
+              <h2 style="margin:0;">Alertas (Bajo Normal) · C.P.</h2>
+              <div class="muted" id="dLowCpMeta">—</div>
+            </div>
+            <div class="chart-wrap" style="margin-top:10px; height:220px;">
+              <canvas id="dLowCpChart" role="img" aria-label="Alertas Bajo Normal - C.P."></canvas>
+            </div>
+            <div id="dLowCpEmpty" class="muted" style="display:none; margin-top:10px;">No hay "Bajo Normal" para mostrar con los filtros actuales.</div>
+          </section>
+        </div>
+</section>
+
+      </div>
+
+      <!-- Abajo: 3 columnas -->
+      <div class="dash-bottom-3" style="margin-top:14px">
+        <section class="card" id="secBottomCompletas">
+          <h2>Completas</h2>
+          <div class="table-tools">
+            <input id="dOkSearch" class="search table-search" type="search" placeholder="Buscar evaluado..." autocomplete="off" />
+          </div>
+          <div class="table-area">
+            <table class="compact-table">
+              <thead>
+                <tr>
+                  <th>Evaluado</th>
+                  <th>Promedio</th>
+                </tr>
+              </thead>
+              <tbody id="dOkTbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card" id="secBottomGerencias">
+          <h2>Gerencias</h2>
+          <div class="table-area">
+            <table class="compact-table">
+              <thead>
+                <tr>
+                  <th>Gerencia</th>
+                  <th>Promedio</th>
+                </tr>
+              </thead>
+              <tbody id="dGerAvgTbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card" id="secBottomSucursales">
+          <h2>Sucursales</h2>
+          <div class="table-area">
+            <table class="compact-table">
+              <thead>
+                <tr>
+                  <th>Sucursal</th>
+                  <th>Promedio</th>
+                </tr>
+              </thead>
+              <tbody id="dSucAvgTbody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <footer class="container">
+      <div>Proyecto Evaluaciones</div>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="main.js"></script>
+
+  <!-- Modal: Detalle de empleados sin asignación -->
+  <div id="dNoAsigBackdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="dNoAsigTitle">
+      <div class="modal-head">
+        <div class="modal-head-left">
+          <div class="modal-title" id="dNoAsigTitle">Empleados sin asignación</div>
+          <div class="modal-sub" id="dNoAsigSub">—</div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-print btn-print--sm" id="dNoAsigPrint" type="button" title="Imprimir listado">Imprimir</button>
+          <button class="btn btn-ghost" id="dNoAsigClose" type="button" aria-label="Cerrar">✕</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="table-area" style="max-height: 62vh; overflow: auto;">
+          <table class="compact-table">
+            <thead>
+              <tr>
+                <th style="width: 55%;">Apellido y Nombre</th>
+                <th style="width: 30%;">Gerencia</th>
+              </tr>
+            </thead>
+            <tbody id="dNoAsigTbody"></tbody>
+          </table>
+        </div>
+        <div id="dNoAsigEmpty" class="muted" style="display:none; padding: 10px 2px;">
+          No hay empleados sin asignación para los filtros actuales.
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn" id="dNoAsigClose2" type="button">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal: Detalle de empleados con evaluación completa -->
+  <div id="dOkBackdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="dOkTitle">
+      <div class="modal-head">
+        <div class="modal-head-left">
+          <div class="modal-title" id="dOkTitle">Empleados con evaluación completa</div>
+          <div class="modal-sub" id="dOkSub">—</div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-print btn-print--sm" id="dOkPrint" type="button" title="Imprimir listado">Imprimir</button>
+          <button class="btn btn-ghost" id="dOkClose" type="button" aria-label="Cerrar">✕</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="table-area" style="max-height: 62vh; overflow: auto;">
+          <table class="compact-table">
+            <thead>
+              <tr>
+                <th style="width: 50%;">Apellido y Nombre</th>
+                <th style="width: 38%;">Gerencia</th>
+              </tr>
+            </thead>
+            <tbody id="dOkModalTbody"></tbody>
+          </table>
+        </div>
+        <div id="dOkEmpty" class="muted" style="display:none; padding: 10px 2px;">
+          No hay empleados con evaluación completa para los filtros actuales.
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn" id="dOkClose2" type="button">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+</html>

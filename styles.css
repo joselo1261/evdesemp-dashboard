@@ -1,0 +1,4631 @@
+:root{
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#475569;
+  --line:#e2e8f0;
+  --brand:#1E3A89;
+  --shadow:0 10px 28px rgba(15,23,42,.08);
+  --radius:16px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  /* Espacio para header fijo (se setea dinámicamente desde main.js) */
+  padding-top: var(--header-h, 0px);
+}
+
+a{color:inherit;text-decoration:none}
+
+.container{max-width:1100px;margin:0 auto;padding:0 16px}
+
+/* Asignaciones: aprovechar mas ancho del body */
+body[data-page="asignaciones"] .container{max-width:1040px}
+
+header{
+  /* FIX: sticky a veces “se corta” si algún ancestro tiene overflow/transform.
+     Con fixed queda firme en todas las páginas. */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: var(--brand);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(15,23,42,.18);
+}
+.header-row{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:14px 0;
+}
+.brand{
+  display:flex;
+  flex-direction:column;
+  line-height:1.05;
+  font-weight:800;
+  letter-spacing:.3px;
+}
+.brand small{font-weight:700;opacity:.9}
+
+nav{
+  display:flex;
+  gap:10px;
+  margin-left:18px;
+  flex-wrap:wrap;
+}
+.nav-link{
+  color:#fff;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.22);
+  font-weight:700;
+  opacity:.9;
+}
+.nav-link:hover{opacity:1;background:rgba(255,255,255,.12)}
+.nav-link.active{background:rgba(255,255,255,.20);opacity:1}
+
+main{padding:18px 0 34px}
+
+.card{
+  background:var(--card);
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:16px;
+}
+
+.page-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+.page-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+/* =========================
+   Compromiso y Presentismo
+   Header: 2 líneas
+   - Línea 1: (page-head) Año + Recargar
+   - Línea 2: (cp-filters) Gerencia + Sucursal
+   ========================= */
+body[data-page="cp"] .cp-head{
+  position: sticky;
+  /* pegado al header principal (sin “hueco” que deja ver el scroll por detrás) */
+  top: var(--header-h, 0px);
+  z-index: 30;
+  background: #fff;
+  /* aire visual cuando queda pegado */
+  box-shadow: 0 10px 22px rgba(15,23,42,.10);
+  border-radius: 14px;
+  padding: 10px 10px 8px;
+  margin: 0 0 10px;
+}
+
+/* =========================
+   Resultados
+   Separación en 2 secciones + header sticky
+   ========================= */
+
+/* En Resultados, al quedar la sección superior sticky,
+   el padding-top global de <main> genera un “hueco” visible.
+   Lo sacamos para que quede pegado como en C.P. */
+body[data-page="resultados"] main{ padding-top: 0; }
+
+body[data-page="resultados"] .res-head{
+  position: sticky;
+  /* pegado al header principal */
+  top: var(--header-h, 0px);
+  z-index: 30;
+  background: #fff;
+  box-shadow: 0 10px 22px rgba(15,23,42,.10);
+  border-radius: 14px;
+  margin: 0 0 10px;
+  /* ajustar “aire” interno para que no quede tanto espacio debajo de filtros */
+  padding: 12px 16px 6px;
+}
+
+body[data-page="resultados"] .res-head .page-head{ margin-bottom: 8px; }
+
+/* En Resultados, compactar el espacio bajo los filtros (la toolbar tiene margen global). */
+body[data-page="resultados"] .res-head .toolbar{ margin: 8px 0 0; }
+
+body[data-page="resultados"] .res-body{
+  margin-top: 0;
+  /* reducir espacio arriba de la sección 2 */
+  padding: 12px;
+}
+
+body[data-page="cp"] .cp-filters{
+  margin: 6px 0 0;
+  display: grid;
+  grid-template-columns: minmax(240px, 1.2fr) minmax(200px, .9fr) 180px minmax(360px, 1.6fr);
+  gap: 12px;
+  align-items: end;
+}
+
+body[data-page="cp"] .cp-search{ margin-left:auto; }
+
+@media (max-width: 980px){
+  body[data-page="cp"] .cp-filters{ display:flex; flex-wrap:wrap; align-items:center; }
+  body[data-page="cp"] .cp-head{ margin: 0 0 10px; padding: 10px; }
+}
+
+/* En CP, los labels de Gerencia/Sucursal sin negrita */
+body[data-page="cp"] .cp-filters .inline{
+  font-weight: 500;
+}
+.inline{display:flex;gap:8px;align-items:center;font-weight:800;color:#334155}
+.anio{
+  width:92px;
+  height:34px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:0 12px;
+  background:#fff;
+  outline:none;
+}
+.anio:focus{
+  border-color:rgba(30,58,137,.55);
+  box-shadow:0 0 0 3px rgba(30,58,137,.14);
+}
+.page-title{margin:0;font-size:18px}
+.muted{color:var(--muted)}
+
+.toolbar{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:10px 0 14px;
+}
+.search{
+  flex:1 1 320px;
+  min-width:240px;
+  height:38px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:#fff;
+  padding:0 14px;
+  outline:none;
+}
+.search:focus{
+  border-color:rgba(30,58,137,.55);
+  box-shadow:0 0 0 3px rgba(30,58,137,.14);
+}
+
+.pill{
+  display:inline-block;
+  padding:.35rem .7rem;
+  border-radius:999px;
+  border:1px solid rgba(15,23,42,.12);
+  background:#f1f5f9;
+  color:#334155;
+  font-weight:700;
+  font-size:.92rem;
+}
+
+.table-wrap{overflow:auto;border-radius:14px;border:1px solid var(--line)}
+
+table{width:100%;border-collapse:separate;border-spacing:0;min-width:760px}
+
+.compact-table thead th{padding:10px 10px;font-size:.88rem}
+.compact-table tbody td{padding:10px 10px;font-size:.9rem}
+
+/* Listado Evaluaciones: que entre todo mejor en una sola línea */
+.le-table{min-width:920px;table-layout:fixed}
+.le-table th,.le-table td{white-space:nowrap}
+.le-table th:nth-child(1){width:26%}
+.le-table th:nth-child(2){width:26%}
+.le-table th:nth-child(3){width:12%}
+.le-table th:nth-child(4){width:14%}
+.le-table th:nth-child(5){width:10%}
+.le-table th:nth-child(6){width:12%}
+.le-table td:nth-child(1),
+.le-table td:nth-child(2),
+.le-table td:nth-child(4){overflow:hidden;text-overflow:ellipsis}
+.le-table .col-date{text-align:center}
+
+.th-actions{width:160px}
+/* ===== Flags (Elegibilidad) ===== */
+.th-center, .td-center{ text-align:center; }
+.flag-check{ width:18px; height:18px; }
+
+/* =========================================================
+   Inicio: Sticky header de la tabla (como flags)
+   - Se renderiza un clon fijo del thead para que quede pegado
+     debajo del header principal al scrollear.
+   ========================================================= */
+body[data-page="inicio"] .inicio-sticky-head{
+  position:fixed;
+  top:var(--header-h, 0px);
+  left:0;
+  width:0;
+  display:none;
+  z-index:999; /* debajo del header (1000) */
+  pointer-events:none;
+}
+
+body[data-page="inicio"] .inicio-sticky-head.is-visible{display:block}
+
+body[data-page="inicio"] .inicio-sticky-head .inicio-sticky-clip{
+  width:100%;
+  overflow:hidden;
+  border-radius:14px 14px 0 0;
+  box-shadow:0 10px 22px rgba(15,23,42,.10);
+}
+
+body[data-page="inicio"] .inicio-sticky-head table{
+  border-collapse:separate;
+  border-spacing:0;
+  min-width:0;
+}
+
+body[data-page="inicio"] .inicio-sticky-head thead th{
+  background:#eef2ff;
+  color:#0f172a;
+  border-bottom:1px solid var(--line);
+  padding:12px 12px;
+  font-size:.9rem;
+  text-align:left;
+}
+
+body[data-page="inicio"].inicio-sticky-on .inicio-table-card thead{
+  visibility:hidden; /* mantiene el alto para que no “salte” */
+}
+
+
+
+/* Sticky visual del encabezado de tabla SOLO en Elegibilidad (flags.html)
+   - Se renderiza un clon fijo por JS para que funcione aunque .table-wrap tenga overflow:auto.
+*/
+body[data-page="flags"] .flags-sticky-head{
+  position:fixed;
+  top:var(--header-h, 0px);
+  left:0;
+  width:0;
+  display:none;
+  z-index:999; /* debajo del header (1000) */
+  pointer-events:none;
+}
+body[data-page="flags"] .flags-sticky-head.is-visible{display:block}
+body[data-page="flags"] .flags-sticky-head .flags-sticky-clip{
+  width:100%;
+  overflow:hidden;
+  border-radius:14px 14px 0 0;
+  box-shadow:0 10px 22px rgba(15,23,42,.10);
+}
+body[data-page="flags"] .flags-sticky-head table{
+  border-collapse:separate;
+  border-spacing:0;
+  min-width:0; /* lo seteamos por JS con width real */
+}
+body[data-page="flags"] .flags-sticky-head thead th{
+  background:#eef2ff;
+  color:#0f172a;
+  border-bottom:1px solid var(--line);
+  padding:12px 12px;
+  font-size:.9rem;
+  font-weight: 800;
+  text-align:left;
+}
+body[data-page="flags"] .flags-sticky-head .th-center{text-align:center}
+body[data-page="flags"].flags-sticky-on .flags-table-card thead{
+  visibility:hidden; /* mantiene el alto para que no “salte” */
+}
+
+
+/* Sticky visual del encabezado de tabla SOLO en Listado Evaluaciones (listado_evaluaciones.html)
+   - Clon fijo por JS para que funcione con scroll vertical + overflow-x.
+*/
+body[data-page="listado_evaluaciones"] .le-sticky-head{
+  position:fixed;
+  top:var(--header-h, 0px);
+  left:0;
+  width:0;
+  display:none;
+  z-index:999; /* debajo del header (1000) */
+  pointer-events:none;
+}
+body[data-page="listado_evaluaciones"] .le-sticky-head.is-visible{display:block}
+body[data-page="listado_evaluaciones"] .le-sticky-head .le-sticky-clip{
+  width:100%;
+  overflow:hidden;
+  border-radius:14px 14px 0 0;
+  box-shadow:0 10px 22px rgba(15,23,42,.10);
+}
+body[data-page="listado_evaluaciones"] .le-sticky-head table{
+  border-collapse:separate;
+  border-spacing:0;
+  min-width:0;
+}
+body[data-page="listado_evaluaciones"] .le-sticky-head thead th{
+  background:#eef2ff;
+  color:#0f172a;
+  border-bottom:1px solid var(--line);
+  padding:12px 12px;
+  font-size:.9rem;
+  text-align:left;
+}
+body[data-page="listado_evaluaciones"].le-sticky-on .le-table-card thead{
+  visibility:hidden; /* mantiene el alto para que no “salte” */
+}
+thead th{
+  text-align:left;
+  font-size:.9rem;
+  padding:12px 12px;
+  background:#eef2ff;
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:1;
+}
+
+tbody td{
+  padding:12px 12px;
+  border-bottom:1px solid rgba(226,232,240,.8);
+  background:#fff;
+}
+
+tbody tr:nth-child(even) td{background:#fafcff}
+
+/* =========================
+   Botón flotante "Arriba" (global)
+   - Se inyecta por JS (main.js)
+   ========================= */
+.backtop{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid rgba(30,58,137,.25);
+  background:rgba(238,242,255,.96);
+  box-shadow:0 10px 22px rgba(15,23,42,.12);
+  color:var(--text);
+  font-weight:800;
+  cursor:pointer;
+  opacity:0;
+  transform:translateY(8px);
+  pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease, background .18s ease;
+}
+.backtop.show{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
+.backtop:hover{background:#fff}
+.backtop:focus{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(30,58,137,.18), 0 10px 22px rgba(15,23,42,.12);
+}
+.backtop__icon{
+  width:28px;
+  height:28px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:rgba(30,58,137,.12);
+  border:1px solid rgba(30,58,137,.18);
+  color:var(--brand);
+  font-size:16px;
+  line-height:1;
+}
+
+tbody tr:hover td{background:#e0f2fe}
+
+.btn{
+  height:32px;
+  padding:0 12px;
+  border-radius:999px;
+  border:1px solid rgba(15,23,42,.18);
+  background:#fff;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.btn:hover{background:#f8fafc}
+
+.btn-primary{
+  border-color:rgba(30,58,137,.35);
+  background:rgba(30,58,137,.08);
+}
+
+.btn-primary:hover{background:rgba(30,58,137,.14)}
+
+.btn:disabled{opacity:.55;cursor:not-allowed}
+
+.subhead{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+
+.split{
+  display:grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap:14px;
+}
+
+.pane{min-width:0}
+.pane-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pane-title{margin:0;font-size:15px;font-weight:900;color:var(--text)}
+
+.pane{min-width:0}
+.pane-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.pane-title{margin:0;font-size:15px}
+
+@media (max-width: 980px){
+  .split{grid-template-columns:1fr}
+}
+
+/* =========================
+   PRINT (Imprimir / PDF)
+   ========================= */
+
+/* Forzar orientación horizontal en el PDF (Chrome/Edge respetan @page) */
+@page{
+  size: A4 landscape;
+  margin: 12mm;
+}
+
+@media print{
+  /* Mantener colores y fondos en el PDF (si el navegador lo permite) */
+  *{
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body{background:#fff; padding-top:0 !important}
+  header, nav, footer,
+  .page-actions,
+  .toolbar{
+    display:none !important;
+  }
+
+  main{padding:0}
+  .container{max-width:none;padding:0}
+  .card{box-shadow:none;border:0;padding:0}
+
+  .table-wrap{border:1px solid #cbd5e1; overflow:visible !important}
+  table{min-width:0 !important}
+
+  thead th{position:static;top:auto;background:#fff}
+  tbody tr:nth-child(even) td{background:#fff}
+  tbody tr:hover td{background:#fff}
+
+  /* Asignaciones: que el PDF se vea igual que pantalla (2 columnas + subheader azul) */
+  body[data-page="asignaciones"] main.container{
+    padding: 0 16px !important;
+  }
+  body[data-page="asignaciones"] .card{
+    border: 1px solid rgba(15,23,42,.08) !important;
+    border-radius: var(--radius) !important;
+    padding: 16px !important;
+    background: #fff !important;
+  }
+
+  body[data-page="asignaciones"] .eval-subheader{
+    background:#1E3A89 !important;
+    border-color:rgba(255,255,255,.18) !important;
+  }
+  body[data-page="asignaciones"] .eval-subheader,
+  body[data-page="asignaciones"] .eval-subheader *{
+    color:#fff !important;
+  }
+
+  body[data-page="asignaciones"] .list{
+    max-height:none !important;
+    overflow:visible !important;
+  }
+  body[data-page="asignaciones"] #evaList .pair-row{
+    grid-template-columns:1fr 1fr !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  body[data-page="asignaciones"] #evaList .pair-empty{
+    display:block !important;
+  }
+
+  /* Comparativos: imprimir solo el body (tabla) */
+  body[data-page="comparativos"] .cmp-head{ display:none !important; }
+
+  /* Comparativos: evitar cortes raros y que la tabla no se recorte */
+  body[data-page="comparativos"] .cmp-body{ padding: 0 8px !important; }
+  body[data-page="comparativos"] .cmp-picked-out-row{
+    break-after: avoid;
+    page-break-after: avoid;
+    margin: 0 0 6mm !important;
+  }
+
+  body[data-page="comparativos"] .cmp-table-wrap{
+    overflow: visible !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 12px !important;
+  }
+
+  body[data-page="comparativos"] table.cmp-table{
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed !important;
+    font-size: 11px !important;
+  }
+
+  body[data-page="comparativos"] .cmp-table thead{ display: table-header-group !important; }
+  body[data-page="comparativos"] .cmp-table thead th{
+    position: static !important;
+    top: auto !important;
+    background: #eef2ff !important;
+  }
+
+  body[data-page="comparativos"] .cmp-table th,
+  body[data-page="comparativos"] .cmp-table td{
+    padding: 6px 8px !important;
+    border-right: 1px solid #cbd5e1 !important;
+  }
+  body[data-page="comparativos"] .cmp-table tr > *:first-child{
+    border-left: 1px solid #cbd5e1 !important;
+  }
+
+  /* Anchos en impresión (evita que se “abra” demasiado) */
+  body[data-page="comparativos"] .cmp-table .col-id{ width: 56px !important; }
+  body[data-page="comparativos"] .cmp-table .col-item{ min-width: 0 !important; width: 44% !important; }
+  body[data-page="comparativos"] .cmp-table .col-val{ width: auto !important; }
+
+  /* Evitar que una fila se corte en dos páginas */
+  body[data-page="comparativos"] .cmp-table tr,
+  body[data-page="comparativos"] .cmp-table .cmp-group,
+  body[data-page="comparativos"] .cmp-table .cmp-subhead{
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+.panel-title{
+  margin:0 0 8px 0;
+  font-size:14px;
+  color:var(--muted);
+  font-weight:900;
+}
+
+.toolbar-compact{
+  grid-template-columns: 1fr 1fr 1fr 1.4fr;
+  gap:10px;
+  margin:8px 0 10px;
+}
+
+.list{
+  border:1px solid var(--line);
+  border-radius:14px;
+  overflow:auto;
+  background:#fff;
+  max-height:560px;
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 12px;
+  border-bottom:1px solid rgba(226,232,240,.8);
+}
+
+.row:last-child{border-bottom:none}
+.row:hover{background:#fafcff}
+
+.row-main{display:flex;flex-direction:column;gap:2px;min-width:0}
+.row-name{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-meta{font-size:.86rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.row.selected{background:#e0f2fe}
+
+.checkbox{
+  width:18px;
+  height:18px;
+}
+
+
+/* ===== Checkboxes modernos (inputs con clase .chk) ===== */
+input.chk[type="checkbox"]{
+  -webkit-appearance:none;
+  appearance:none;
+  width:18px;
+  height:18px;
+  border:1.6px solid rgba(148,163,184,.95); /* slate-400 */
+  border-radius:6px;
+  background:#fff;
+  display:inline-grid;
+  place-content:center;
+  cursor:pointer;
+  vertical-align:middle;
+  transition:background .15s ease,border-color .15s ease,box-shadow .15s ease,transform .05s ease;
+}
+
+input.chk[type="checkbox"]::before{
+  content:"";
+  width:9px;
+  height:5px;
+  border-left:2px solid #fff;
+  border-bottom:2px solid #fff;
+  transform:rotate(-45deg) scale(0);
+  transform-origin:center;
+  transition:transform .12s ease-in-out;
+}
+
+input.chk[type="checkbox"]:hover{
+  border-color:rgba(100,116,139,.95); /* slate-500 */
+}
+
+input.chk[type="checkbox"]:active{
+  transform:scale(.96);
+}
+
+input.chk[type="checkbox"]:checked{
+  background:var(--brand);
+  border-color:var(--brand);
+}
+
+input.chk[type="checkbox"]:checked::before{
+  transform:rotate(-45deg) scale(1);
+}
+
+input.chk[type="checkbox"]:focus-visible{
+  outline:0;
+  box-shadow:0 0 0 3px rgba(30,58,137,.22);
+}
+
+input.chk[type="checkbox"][disabled]{
+  cursor:not-allowed;
+  opacity:.55;
+}
+
+
+.note{
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px dashed rgba(30,58,137,.35);
+  background:rgba(230,236,255,.55);
+  color:#0f172a;
+  font-size:.95rem;
+}
+
+.status{
+  font-size:.92rem;
+  color:#0f172a;
+  opacity:.9;
+}
+
+.loading{opacity:.7;pointer-events:none}
+
+footer{
+  padding:18px 0 26px;
+  color:#64748b;
+  font-size:.92rem;
+}
+
+/* ===== Filtros “pastilla” en una sola línea (Inicio) ===== */
+.toolbar{
+  flex-wrap: nowrap;              /* todo en una linea */
+  overflow-x: auto;               /* si no entra, scrollea horizontal (mobile/ventanas chicas) */
+  padding-bottom: 4px;            /* deja lugar para el scrollbar */
+  gap: 10px;
+}
+
+.toolbar::-webkit-scrollbar{ height: 8px; }
+.toolbar::-webkit-scrollbar-thumb{
+  background: rgba(15,23,42,.15);
+  border-radius: 999px;
+}
+
+.filter{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;           /* redondeado tipo foto */
+  flex: 0 0 auto;                 /* no se achica raro */
+}
+
+.filter label{
+  margin: 0;
+  font-size: .86rem;
+  font-weight: 800;
+  color: #334155;
+  white-space: nowrap;
+}
+
+/* Selects estilo “inline” dentro de la pastilla */
+.select{
+  height: 28px;
+  border: none;
+  outline: none;
+  background: transparent;
+
+  padding: 0 26px 0 2px;          /* espacio para la flechita */
+  font-weight: 800;
+  color: var(--text);
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath fill='%2364748b' d='M5.7 7.5a1 1 0 0 1 1.4 0L10 10.4l2.9-2.9a1 1 0 1 1 1.4 1.4l-3.6 3.6a1 1 0 0 1-1.4 0L5.7 8.9a1 1 0 0 1 0-1.4Z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 16px;
+  cursor: pointer;
+}
+
+/* Search adentro de la misma pastilla */
+.search-filter{
+  flex: 1 1 360px;                /* ocupa el espacio restante */
+  min-width: 320px;
+}
+
+.search-filter .search{
+  flex: 1;
+  min-width: 220px;
+  height: 28px;
+
+  border: none;                   /* se lo damos a la pastilla, no al input */
+  padding: 0 2px;
+  background: transparent;
+}
+
+.search-filter .search:focus{
+  box-shadow: none;               /* el foco lo maneja el contenedor */
+}
+
+/* Foco lindo al interactuar con select o search */
+.filter:focus-within{
+  border-color: rgba(30,58,137,.55);
+  box-shadow: 0 0 0 3px rgba(30,58,137,.14);
+}
+
+/* ===== Ajuste: que entren en el ancho + sin negritas en filtros ===== */
+.toolbar{
+  overflow-x: hidden;          /* sin scroll horizontal */
+}
+
+.toolbar .filter{
+  flex: 1 1 0;                 /* todos se reparten el ancho */
+  min-width: 0;                /* permite achicarse sin romper */
+}
+
+.search-filter{
+  flex: 1.4 1 0;               /* la búsqueda un poco más ancha */
+  min-width: 0;
+}
+
+.filter{
+  height: 40px;
+  padding: 6px 10px;
+}
+
+.filter label{
+  font-weight: 500;            /* sin negritas */
+}
+
+.select{
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  font-weight: 500;            /* sin negritas */
+}
+
+.search-filter .search{
+  width: 100%;
+  min-width: 0;
+  font-weight: 500;            /* sin negritas */
+}
+
+/* ===== Asignaciones: subheader evaluador + centrar contenido ===== */
+body[data-page="asignaciones"] .eval-subheader{
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+
+body[data-page="asignaciones"] .eval-subheader-title{
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+body[data-page="asignaciones"] #evaluadorCard{
+  padding: 0; /* lo manejamos desde el contenedor */
+}
+
+/* Ocultar el botón/acción “Volver a Inicio” si el JS lo renderiza */
+body[data-page="asignaciones"] #evaluadorCard .e-actions{
+  display: none !important;
+}
+
+/* Ajuste visual del contenido del evaluador dentro del subheader */
+body[data-page="asignaciones"] #evaluadorCard .e-name{
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+body[data-page="asignaciones"] #evaluadorCard .e-meta{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  align-items: center;
+}
+
+/* “Centro del body” para la parte de Agente Evaluado */
+body[data-page="asignaciones"] .asig-center{
+  max-width: 1040px;
+  margin: 16px auto 0;
+  width: 100%;
+}
+
+/* Asignaciones: listado en 2 columnas (desktop) */
+body[data-page="asignaciones"] #evaList{
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cada fila contiene 2 celdas. El borde inferior queda alineado por fila. */
+body[data-page="asignaciones"] #evaList .pair-row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid rgba(30,58,137,.18);
+}
+
+body[data-page="asignaciones"] #evaList .pair-row:last-child{
+  border-bottom: none;
+}
+
+body[data-page="asignaciones"] #evaList .pair-empty{
+  border-left: 1px solid rgba(30,58,137,.12);
+}
+
+@media (max-width: 920px){
+  body[data-page="asignaciones"] #evaList .pair-row{ grid-template-columns: 1fr; }
+  body[data-page="asignaciones"] #evaList .pair-empty{ display:none; }
+}
+
+/* =========================================================
+   Listado Asignaciones: toolbar en 2 renglones
+   - Fila 1: Evaluador + Evaluado en una sola linea (ancho acotado)
+   - Fila 2: resto de filtros ocupando el ancho disponible
+   Nota: esto sobre-escribe los estilos generales de .toolbar (inicio)
+   ========================================================= */
+
+body[data-page="listado"] .toolbar.toolbar-2rows{
+  /* Anulamos el comportamiento general que centraba y apilaba */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  overflow: hidden;
+  flex-wrap: nowrap;
+}
+
+body[data-page="listado"] .toolbar.toolbar-2rows .toolbar-row{
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* --- Fila superior (solo 2 filtros, sin estirarse a todo el ancho) --- */
+body[data-page="listado"] .toolbar.toolbar-2rows .row-top{
+  justify-content: flex-start;
+}
+
+body[data-page="listado"] .toolbar.toolbar-2rows .row-top .filter{
+  /* sobre-escribe .toolbar .filter { flex: 1 1 0 } */
+  flex: 0 1 420px !important;
+  width: clamp(280px, 38vw, 440px);
+  max-width: 440px;
+}
+
+/* --- Fila inferior (repartida y a todo el ancho) --- */
+body[data-page="listado"] .toolbar.toolbar-2rows .row-bottom{
+  flex-wrap: nowrap;
+}
+
+body[data-page="listado"] .toolbar.toolbar-2rows .row-bottom .filter{
+  flex: 0 1 280px !important;
+  min-width: 210px;
+  max-width: 340px;
+}
+
+body[data-page="listado"] .toolbar.toolbar-2rows .row-bottom .search-filter{
+  flex: 1 1 auto !important;
+  min-width: 320px;
+  max-width: none;
+}
+
+/* En pantallas angostas, dejamos que se apilen de forma natural */
+@media (max-width: 820px){
+  body[data-page="listado"] .toolbar.toolbar-2rows .row-top .filter{
+    width: 100%;
+    max-width: none;
+    flex: 1 1 100% !important;
+  }
+
+  body[data-page="listado"] .toolbar.toolbar-2rows .row-bottom{
+    flex-wrap: wrap;
+  }
+
+  body[data-page="listado"] .toolbar.toolbar-2rows .row-bottom .filter{
+    flex: 1 1 100% !important;
+    max-width: none;
+  }
+
+  body[data-page="listado"] .toolbar.toolbar-2rows .row-bottom .search-filter{
+    flex: 1 1 100% !important;
+  }
+}
+
+
+/* ===== Listado Asignaciones: igualar estilo de filtros y header de tabla como Inicio ===== */
+body[data-page="listado"] .toolbar.toolbar-2rows{
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(30,58,137,.04);
+  border: 1px solid rgba(30,58,137,.10);
+}
+
+/* Header de tabla (sección body) con el mismo look de Inicio */
+body[data-page="listado"] table thead th{
+  background: linear-gradient(180deg, rgba(30,58,137,.12) 0%, rgba(30,58,137,.06) 100%);
+  color: #1E3A89;
+  font-weight: 800;
+  border-bottom: 1px solid rgba(30,58,137,.18);
+}
+
+/* Sticky header (clonado) del listado con el mismo look de Inicio */
+body[data-page="listado"] .listado-sticky-head thead th{
+  background: linear-gradient(180deg, rgba(30,58,137,.12) 0%, rgba(30,58,137,.06) 100%);
+  color: #1E3A89;
+  font-weight: 800;
+  border-bottom: 1px solid rgba(30,58,137,.18);
+}
+
+
+/* =========================================================
+   LISTADO ASIGNACIONES · Igualar look & feel de Inicio (Opción B)
+   - No cambia estructura HTML, solo estética de:
+     pills, toolbar/filtros, inputs y encabezado de tabla.
+   ========================================================= */
+body[data-page="listado"] .pill{
+  border: 1px solid rgba(30,58,137,.18);
+  background: rgba(30,58,137,.06);
+  color: #0f172a;
+  border-radius: 999px;
+}
+
+body[data-page="listado"] .toolbar{
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(30,58,137,.04);
+  border: 1px solid rgba(30,58,137,.10);
+  gap: 12px;
+}
+
+body[data-page="listado"] .filter label{
+  color: #0f172a;
+  font-weight: 600;
+}
+
+body[data-page="listado"] .select,
+body[data-page="listado"] .search{
+  border-radius: 14px;
+  border: 1px solid rgba(148,163,184,.85);
+  background: rgba(255,255,255,.95);
+  box-shadow: 0 1px 0 rgba(2,6,23,.04);
+  transition: box-shadow .15s ease, border-color .15s ease, transform .05s ease;
+}
+
+body[data-page="listado"] .select:focus,
+body[data-page="listado"] .search:focus{
+  outline: none;
+  border-color: rgba(30,58,137,.55);
+  box-shadow: 0 0 0 .22rem rgba(30,58,137,.16);
+}
+
+body[data-page="listado"] .select:active,
+body[data-page="listado"] .search:active{
+  transform: translateY(1px);
+}
+
+/* Tabla “soft data-grid” (como Inicio) */
+body[data-page="listado"] .listado-table-card .table-wrap{
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(30,58,137,.12);
+  background: #fff;
+}
+
+body[data-page="listado"] .listado-table-card table thead th{
+  background: linear-gradient(180deg, rgba(30,58,137,.12) 0%, rgba(30,58,137,.06) 100%);
+  color: #1E3A89;
+  font-weight: 800;
+  border-bottom: 1px solid rgba(30,58,137,.18);
+}
+
+body[data-page="listado"] .listado-table-card table tbody td{
+  border-bottom: 1px solid rgba(2,6,23,.06);
+}
+
+body[data-page="listado"] .listado-table-card table tbody tr:nth-child(even){
+  background: rgba(30,58,137,.02);
+}
+
+body[data-page="listado"] .listado-table-card table tbody tr:hover{
+  background: rgba(30,58,137,.06);
+}
+
+/* Un poco de aire entre subheader y filtros/lista */
+body[data-page="asignaciones"] .asig-center .pane{
+  margin-top: 10px;
+}
+
+/* ===== FIX Inicio: ícono Asignar no debe agrandarse ===== */
+.btn-icon{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  line-height: 0;
+}
+
+.btn-ico{
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  display: block;
+}
+
+
+/* ===== Bootstrap Icons (para botones ícono) ===== */
+i.btn-ico{
+  width: 18px !important;
+  height: 18px !important;
+  display: block;
+  font-size: 18px;
+  line-height: 1;
+}
+
+body[data-page="listado"] .td-actions a.btn.btn-icon{
+  color: #1E3A89;
+}
+
+body[data-page="listado"] .td-actions a.btn.btn-icon:hover{
+  color: #0f2f73;
+}
+
+
+/* Evaluaciones: cuando la evaluación está COMPLETA, pintamos el ícono en azul (navy) */
+body[data-page="realizar"] .btn-icon.is-complete .btn-ico{
+  /* Convierte un ícono negro/gris a azul tipo #1E3A89 (aprox) */
+  filter: brightness(0) saturate(100%) invert(18%) sepia(38%) saturate(2280%) hue-rotate(205deg) brightness(90%) contrast(95%);
+}
+
+.td-actions{
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.th-actions{
+  width: 110px;
+  text-align: center;
+}
+
+/* Por si hay reglas globales de img */
+.td-actions img{
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+}
+
+/* ===== Inicio: botón Asignar SOLO ícono (sin texto visible) ===== */
+.td-actions .btn-icon{
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 0;              /* asegura icon-only aunque haya texto */
+}
+
+.td-actions .btn-icon span:not(.sr-only){
+  display: none !important;
+}
+
+/* ===== FIX Inicio: evitar superposición en botón Asignar (icon-only) ===== */
+body[data-page="inicio"] .td-actions a.btn{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0 !important;
+  border-radius: 999px;
+  font-size: 0;              /* oculta cualquier texto “Asignar” si quedó en el HTML */
+  line-height: 0;
+}
+
+/* Si algún estilo agrega pseudo-elementos (circulito superpuesto), los anulamos */
+body[data-page="inicio"] .td-actions a.btn::before,
+body[data-page="inicio"] .td-actions a.btn::after{
+  content: none !important;
+  display: none !important;
+}
+
+body[data-page="inicio"] .td-actions a.btn img{
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  display: block;
+}
+
+body[data-page="inicio"] .td-actions a.btn span:not(.sr-only){
+  display: none !important;
+}
+
+/* Accesibilidad: texto solo para lectores de pantalla */
+.sr-only{
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ===== Asignaciones: evaluador en una sola línea (sin romper Inicio) ===== */
+body[data-page="asignaciones"] .eval-subheader{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+body[data-page="asignaciones"] .eval-subheader-title{
+  margin: 0;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+body[data-page="asignaciones"] #evaluadorCard{
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex: 1 1 auto;
+  min-width: 0;               /* permite ellipsis */
+}
+
+body[data-page="asignaciones"] #evaluadorCard .e-name{
+  margin: 0 !important;       /* anula margin-bottom */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+body[data-page="asignaciones"] #evaluadorCard .e-meta{
+  display: flex;
+  flex-wrap: nowrap;          /* una sola línea */
+  gap: 18px;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;           /* no rompe el ancho */
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+body[data-page="asignaciones"] #evaluadorCard .e-meta > div{
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+/* Por seguridad: el botón de acciones no se muestra */
+body[data-page="asignaciones"] #evaluadorCard .e-actions{
+  display: none !important;
+}
+
+/* ===== Asignaciones: ajuste visual subheader evaluador (más legible) ===== */
+body[data-page="asignaciones"] .eval-subheader-title{
+  font-size: 1.05rem;          /* “Evaluador” un poco más grande */
+  font-weight: 800;
+}
+
+body[data-page="asignaciones"] #evaluadorCard .e-name{
+  font-weight: 500;            /* Apellido y Nombre sin negrita */
+}
+
+/* Separadores con “-” entre campos */
+body[data-page="asignaciones"] #evaluadorCard .e-meta{
+  gap: 0;                      /* usamos separadores */
+}
+
+body[data-page="asignaciones"] #evaluadorCard .e-meta > div{
+  position: relative;
+  padding: 0 12px;
+}
+
+body[data-page="asignaciones"] #evaluadorCard .e-meta > div:first-child{
+  padding-left: 0;
+}
+
+body[data-page="asignaciones"] #evaluadorCard .e-meta > div:not(:first-child)::before{
+  content: "-";
+  position: absolute;
+  left: 0;
+  color: #94a3b8;
+}
+
+/* ===== Asignaciones: subheader evaluador con fondo azul oscuro y texto blanco ===== */
+body[data-page="asignaciones"] .eval-subheader{
+  background: #1E3A89;          /* azul oscuro */
+  border-color: rgba(255,255,255,.18);
+}
+
+body[data-page="asignaciones"] .eval-subheader,
+body[data-page="asignaciones"] .eval-subheader *{
+  color: #fff;
+}
+
+body[data-page="asignaciones"] #evaluadorCard .e-name{
+  color: #fff;
+}
+
+body[data-page="asignaciones"] #evaluadorCard .e-meta > div:not(:first-child)::before{
+  color: rgba(255,255,255,.55); /* separador */
+}
+
+/* ===== Asignaciones: flecha después de “Evaluador” ===== */
+body[data-page="asignaciones"] .eval-subheader-title::after{
+  content: " ⇒";
+  font-weight: 800;
+  margin-left: 6px;
+  opacity: .9;
+}
+
+/* ===== Asignaciones: separador entre Nombre y primer campo meta ===== */
+body[data-page="asignaciones"] #evaluadorCard .e-name{
+  position: relative;
+  padding-right: 14px;
+  margin-right: 12px;
+}
+
+body[data-page="asignaciones"] #evaluadorCard .e-name::after{
+  content: "-";
+  position: absolute;
+  right: 0;
+  color: rgba(255,255,255,.55);
+}
+
+/* ===== Asignaciones: cada empleado en una sola línea + checkbox a la derecha ===== */
+body[data-page="asignaciones"] #evaList .item{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+body[data-page="asignaciones"] #evaList .item-main{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;                 /* habilita ellipsis */
+}
+
+/* Nombre */
+body[data-page="asignaciones"] #evaList .item-title{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+/* Sucursal/Gerencia/Sector en la misma línea */
+body[data-page="asignaciones"] #evaList .item-sub{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  opacity: .95;
+  font-size: .85rem;
+  padding: 2px 8px;
+  border: 1px solid rgba(30,58,137,.18);
+  border-radius: 999px;
+  background: rgba(30,58,137,.04);
+}
+
+/* Separador entre nombre y detalle */
+body[data-page="asignaciones"] #evaList .item-sub::before{
+  content: "";
+}
+
+/* Checkbox alineado a la derecha + separador vertical */
+body[data-page="asignaciones"] #evaList .item-check{
+  margin-left: auto;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 12px;
+  border-left: 1px solid rgba(30,58,137,.12);
+  height: 100%;
+}
+
+body[data-page="asignaciones"] #evaList .item-check input.chk{
+  margin: 0;
+}
+
+/* ===== Asignaciones: separadores suaves entre filas (UX) ===== */
+body[data-page="asignaciones"] #evaList{
+  border-top: 1px solid rgba(30,58,137,.18);   /* inicio del bloque */
+}
+
+body[data-page="asignaciones"] #evaList .item{
+  padding: 6px 10px;                            /* más angosto */
+  min-height: 46px;                             /* alto parejo para alinear */
+  border-bottom: none;                          /* lo maneja .pair-row */
+  border-right: none;                           /* lo maneja .pair-row */
+}
+
+/* divisor vertical entre columnas */
+body[data-page="asignaciones"] #evaList .pair-row > .item{
+  border-right: 1px solid rgba(30,58,137,.12);
+}
+body[data-page="asignaciones"] #evaList .pair-row > .item:last-child{
+  border-right: none;
+}
+
+@media (max-width: 920px){
+  body[data-page="asignaciones"] #evaList .pair-row > .item{ border-right: none; }
+}
+
+body[data-page="asignaciones"] #evaList .item:hover{
+  background: rgba(30,58,137,.04);
+}
+
+/* =========================
+   Evaluaciones (realizar)
+   ========================= */
+
+body[data-page="realizar"] .r-list{
+  margin-top: 12px;
+  /* En desktop mostramos 3 columnas para aprovechar mejor el espacio */
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+body[data-page="realizar"] .r-item{
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(15,23,42,.10);
+  border-radius: 14px;
+  min-width: 0;                 /* habilita ellipsis adentro */
+  height: 100%;                 /* que la tarjeta llene la celda del grid */
+  /* Glass (opción C) */
+  background: rgba(255,255,255,.78);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 24px rgba(15,23,42,.08);
+  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+body[data-page="realizar"] .r-item:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(15,23,42,.10);
+  background: rgba(255,255,255,.86);
+}
+
+body[data-page="realizar"] .r-main{min-width:0; flex: 1 1 auto}
+body[data-page="realizar"] .r-name{font-weight: 800}
+body[data-page="realizar"] .r-meta{color: var(--muted); font-size: .92rem; margin-top: 2px}
+
+body[data-page="realizar"] .r-status{ margin-top: 8px; }
+
+body[data-page="realizar"] .r-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .78rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.14);
+  background: rgba(15,23,42,.03);
+  color: rgba(15,23,42,.80);
+}
+
+body[data-page="realizar"] .r-badge--ok{
+  background: #16a34a; /* verde */
+  border-color: #16a34a;
+  color: #fff;
+}
+
+body[data-page="realizar"] .r-badge--draft{
+  background: #f59e0b; /* amarillo */
+  border-color: #f59e0b;
+  color: #fff;
+}
+
+body[data-page="realizar"] .r-badge--pending{
+  background: #dc2626; /* rojo */
+  border-color: #dc2626;
+  color: #fff;
+}
+
+
+/* =========================
+   Compromiso y Presentismo (cp)
+   Reutiliza el mismo layout de tarjetas que Evaluaciones
+   ========================= */
+
+body[data-page="cp"] .r-list{
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+body[data-page="cp"] .r-item{
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(15,23,42,.10);
+  border-radius: 14px;
+  min-width: 0;
+  height: 100%;
+  /* Glass (opción C) */
+  background: rgba(255,255,255,.78);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 24px rgba(15,23,42,.08);
+  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+body[data-page="cp"] .r-item:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(15,23,42,.10);
+  background: rgba(255,255,255,.86);
+}
+
+body[data-page="cp"] .r-main{min-width:0; flex: 1 1 auto}
+body[data-page="cp"] .r-name{font-weight: 800}
+body[data-page="cp"] .r-meta{color: var(--muted); font-size: .92rem; margin-top: 2px}
+body[data-page="cp"] .r-status{ margin-top: 8px; }
+
+body[data-page="cp"] .r-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .78rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.14);
+  background: rgba(15,23,42,.03);
+  color: rgba(15,23,42,.80);
+}
+
+body[data-page="cp"] .r-badge--ok{
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+}
+
+body[data-page="cp"] .r-badge--pending{
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #fff;
+}
+
+/* =========================
+   Listado Evaluaciones: reutiliza badges (Completa/Pendiente)
+   ========================= */
+
+body[data-page="listado_evaluaciones"] .r-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .78rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.14);
+  background: rgba(15,23,42,.03);
+  color: rgba(15,23,42,.80);
+}
+
+body[data-page="listado_evaluaciones"] .r-badge--ok{
+  background: #16a34a; /* verde */
+  border-color: #16a34a;
+  color: #fff;
+}
+
+body[data-page="listado_evaluaciones"] .r-badge--pending{
+  background: #dc2626; /* rojo */
+  border-color: #dc2626;
+  color: #fff;
+}
+
+/* Responsive: 2 columnas en pantallas medianas, 1 en mobile */
+@media (max-width: 1020px){
+  body[data-page="realizar"] .r-list{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body[data-page="cp"] .r-list{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px){
+  body[data-page="realizar"] .r-list{ grid-template-columns: 1fr; }
+  body[data-page="cp"] .r-list{ grid-template-columns: 1fr; }
+}
+
+/* =========================
+   Evaluaciones (realizar): filtro Evaluador con ancho acotado
+   ========================= */
+
+/* En esta pantalla no queremos que los .filter se estiren a todo el ancho */
+body[data-page="realizar"] .toolbar{
+  overflow-x: visible;          /* evita que recorte */
+}
+
+body[data-page="realizar"] .toolbar .filter{
+  flex: 0 0 auto;               /* anula el reparto al 100% */
+}
+
+body[data-page="realizar"] .toolbar .filter-wide{
+  width: auto;
+  max-width: 560px;
+}
+
+body[data-page="realizar"] .toolbar .filter-wide .select{
+  width: auto;
+  min-width: 320px;             /* cómodo para nombres */
+  max-width: 100%;
+}
+
+body[data-page="realizar"] .textarea{
+  width: 100%;
+  border: 1px solid rgba(15,23,42,.18);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  resize: vertical;
+  background: #fff;
+}
+
+body[data-page="realizar"] #rNotes.textarea{
+  min-height: 96px;
+}
+
+body[data-page="cp"] #cNotes.textarea{
+  min-height: 96px;
+}
+
+
+/* =========================================================
+   Evaluaciones (realizar)
+   APLICAR el look de Inicio (Opción B) SOLO a la barra de filtros
+   - No cambia estructura HTML, solo estética (pills/toolbar/inputs).
+   ========================================================= */
+body[data-page="realizar"] .eval-top-card .subhead .pill{
+  border: 1px solid rgba(30,58,137,.18);
+  background: rgba(30,58,137,.06);
+  color: #0f172a;
+}
+
+body[data-page="realizar"] .eval-top-card .toolbar{
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(30,58,137,.04);
+  border: 1px solid rgba(30,58,137,.10);
+  gap: 12px;
+}
+
+body[data-page="realizar"] .eval-top-card .toolbar .filter{
+  border-color: rgba(148,163,184,.85);
+  background: rgba(255,255,255,.95);
+  box-shadow: 0 1px 0 rgba(2,6,23,.04);
+}
+
+body[data-page="realizar"] .eval-top-card .toolbar .filter label,
+body[data-page="realizar"] .eval-top-card .page-actions .inline{
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* El Buscar de Evaluaciones no usa .search-filter: lo igualamos a Inicio */
+body[data-page="realizar"] .eval-top-card .toolbar .filter .inline{
+  width: 100%;
+  min-width: 0;
+}
+
+body[data-page="realizar"] .eval-top-card .toolbar .filter .inline > span{
+  white-space: nowrap;
+}
+
+body[data-page="realizar"] .eval-top-card .toolbar .filter .inline .search{
+  border: none;
+  background: transparent;
+  height: 28px;
+  padding: 0 2px;
+  min-width: 0;
+  flex: 1;
+  box-shadow: none;
+}
+
+/* Evaluaciones (realizar): sin flecha en los selects (como en Inicio) */
+body[data-page="realizar"] .eval-top-card .toolbar .select{
+  background-image: none;
+  padding-right: 2px; /* recupera espacio al quitar el ícono */
+}
+body[data-page="realizar"] .eval-top-card .toolbar .select::-ms-expand{ display:none; }
+
+/* Comparativos: sin flecha en los selects (igual que Evaluaciones) */
+body[data-page="comparativos"] .cmp-head .toolbar .select{
+  background-image: none;
+  padding-right: 2px;
+}
+body[data-page="comparativos"] .cmp-head .toolbar .select::-ms-expand{ display:none; }
+
+/* Comparativos: 1 sola línea (estado + evaluados + acciones) */
+body[data-page="comparativos"] .cmp-head .cmp-topline{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:nowrap;
+}
+
+body[data-page="comparativos"] .cmp-head .subhead{
+  margin:0;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex:0 0 auto;
+}
+
+body[data-page="comparativos"] .cmp-head .cmp-inline-filters{
+  margin:0;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:nowrap;
+  justify-content:center;
+  flex:1 1 auto;
+  min-width:520px;
+}
+
+body[data-page="comparativos"] .cmp-head .cmp-inline-filters .filter{
+  flex:1 1 420px;
+  min-width:260px;
+  max-width:560px;
+}
+
+body[data-page="comparativos"] .cmp-head .page-actions{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+/* Comparativos: igualar alturas/espacios en la 1ra fila */
+body[data-page="comparativos"] .cmp-head .subhead .pill{
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+}
+
+/* Comparativos: separar visualmente "Año:" y "Estado:" del valor (evita que se vean pegados) */
+body[data-page="comparativos"] .cmp-head .subhead .pill > span{
+  display: inline-block;
+  margin-left: 6px;
+}
+
+
+body[data-page="comparativos"] .cmp-head .page-actions .anio{
+  height: 40px;
+}
+
+body[data-page="comparativos"] .cmp-head .cmp-title-row{
+  margin:0 0 6px 0;
+}
+
+/* =========================================================
+   Comparativos
+   - Ensanchar el body para que entre todo en una sola vista
+   - Poner Evaluado 1 y Evaluado 2 en la MISMA línea (sin wrap)
+   - Mantener el padding inferior del bloque (no tocamos .card)
+   ========================================================= */
+
+/* Más ancho SOLO en Comparativos (no afecta otras páginas) */
+body[data-page="comparativos"] .container{
+  max-width: 1480px;
+}
+
+/* La fila de filtros en 2 columnas fijas (Eval 1 | Eval 2) */
+body[data-page="comparativos"] .cmp-head .toolbar{
+  /* anulamos el comportamiento global (flex + reparto) */
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
+  gap: 12px;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow: visible;
+  margin: 0; /* sin desalinear la fila */
+}
+
+body[data-page="comparativos"] .cmp-head .toolbar .filter{
+  min-width: 0;
+}
+
+/* Responsive: en pantallas chicas se apilan (lógico) */
+@media (max-width: 860px){
+  body[data-page="comparativos"] .container{ max-width: 1100px; }
+  body[data-page="comparativos"] .cmp-head .toolbar{ grid-template-columns: 1fr; }
+}
+
+/* Ajuste del input Año para que se vea “pill” como el resto del header */
+body[data-page="realizar"] .eval-top-card .page-actions .anio{
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,.85);
+  background: rgba(255,255,255,.95);
+  box-shadow: 0 1px 0 rgba(2,6,23,.04);
+}
+body[data-page="realizar"] .eval-top-card .page-actions .anio:focus{
+  border-color: rgba(30,58,137,.55);
+  box-shadow: 0 0 0 .22rem rgba(30,58,137,.16);
+}
+
+/* Modal */
+.modal-backdrop{
+  position: fixed;
+  inset: 0;
+  /* Importante: en CP se carga Bootstrap, que define .modal-backdrop con
+     `opacity: .5`. Como nuestro modal está *dentro* del backdrop (no es un
+     elemento separado como en Bootstrap), esa opacity vuelve transparente al
+     contenido. Forzamos opacity=1 y usamos rgba para oscurecer. */
+  opacity: 1 !important;
+  background: rgba(2,6,23,.55) !important;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  /* Debe quedar por encima del header fijo (z-index:1000) y de los sticky internos */
+  z-index: 2000;
+}
+
+.modal-backdrop.show{display: flex}
+
+/* Override Bootstrap .modal (Compromiso y Presentismo incluye Bootstrap CSS)
+   Nuestro modal vive dentro de .modal-backdrop y debe ser visible al abrir.
+*/
+.modal-backdrop .modal{
+  display: block;
+  position: relative;
+  inset: auto;
+  margin: 0;
+  pointer-events: auto;
+  /* Bootstrap puede dejar el modal en opacity:0 (fade). Forzamos visibilidad. */
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+
+.modal{
+  width: min(760px, 100%);
+  max-height: 88vh;
+  overflow: auto;
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 18px;
+  box-shadow: 0 18px 60px rgba(2,6,23,.40);
+}
+
+.modal-head{
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(15,23,42,.10);
+}
+
+.modal-title{font-weight: 900; font-size: 1.1rem}
+.modal-sub{color: var(--muted); font-size: .92rem; margin-top: 2px}
+
+.modal-msg{
+  padding: 10px 16px;
+  color: var(--muted);
+}
+
+.modal-body{padding: 4px 16px 14px}
+
+.modal-foot{
+  padding: 14px 16px;
+  border-top: 1px solid rgba(15,23,42,.10);
+  display:flex;
+  justify-content: flex-end;
+}
+
+.form-grid{
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 720px){
+  .form-grid{grid-template-columns: 1fr}
+}
+
+/* Rubrica (Evaluaciones) */
+body[data-page="realizar"] .r-legend{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 14px;
+}
+
+body[data-page="realizar"] .r-tag{
+  display:inline-flex;
+  align-items:center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: .88rem;
+  border: 1px solid rgba(15,23,42,.12);
+}
+
+body[data-page="realizar"] .r-tag-bajo{background: #ffe5e5;}
+body[data-page="realizar"] .r-tag-normal{background: #fff7bf;}
+body[data-page="realizar"] .r-tag-muy{background: #ffe2b3;}
+body[data-page="realizar"] .r-tag-exc{background: #d9f2d9;}
+
+/* ===== Evaluaciones (realizar): colorear el select segun valor ===== */
+body[data-page="realizar"] .r-select{
+  width: 100%;
+  height: 32px;
+  border: 1px solid rgba(15,23,42,.18);
+  border-radius: 999px;
+  background-color: #fff;            /* usar background-color para no pisar la flecha del .select */
+  padding: 0 28px 0 10px;           /* espacio para la flecha */
+  font-weight: 800;
+}
+
+body[data-page="realizar"] .r-select.is-bajo{   background-color:#ffe5e5; }
+body[data-page="realizar"] .r-select.is-normal{ background-color:#fff7bf; }
+body[data-page="realizar"] .r-select.is-muy{    background-color:#ffe2b3; }
+body[data-page="realizar"] .r-select.is-exc{    background-color:#d9f2d9; }
+
+
+body[data-page="realizar"] .rubrica{
+  display:flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+body[data-page="realizar"] .r-sec{
+  border: 1px solid rgba(15,23,42,.10);
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255,255,255,.85);
+}
+
+body[data-page="realizar"] .r-sec-title{
+  padding: 10px 12px;
+  font-weight: 900;
+  background: rgba(30,58,137,.06);
+  border-bottom: 1px solid rgba(15,23,42,.08);
+}
+
+body[data-page="realizar"] .r-sec-body{padding: 10px 12px; display:flex; flex-direction: column; gap: 10px;}
+
+body[data-page="realizar"] .r-row{
+  display:grid;
+  grid-template-columns: 1fr 140px;
+  gap: 12px;
+  align-items: center;
+}
+
+body[data-page="realizar"] .r-q{display:flex; gap: 10px; align-items:flex-start; min-width: 0;}
+body[data-page="realizar"] .r-code{
+  width: 48px;
+  flex: 0 0 48px;
+  font-weight: 900;
+  color: rgba(2,6,23,.70);
+}
+body[data-page="realizar"] .r-text{font-weight: 650; color: rgba(2,6,23,.92); line-height: 1.25;}
+
+/* (reemplazado por estilos mas completos de .r-select) */
+
+@media (max-width: 720px){
+  body[data-page="realizar"] .r-row{grid-template-columns: 1fr;}
+  body[data-page="realizar"] .r-code{width: 44px; flex-basis: 44px;}
+}
+
+/* =========================
+   Compromiso y Presentismo (cp)
+   Modal / Rubrica: mismos estilos que Evaluaciones (realizar)
+   ========================= */
+
+body[data-page="cp"] .textarea{
+  width: 100%;
+  border: 1px solid rgba(15,23,42,.18);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  resize: vertical;
+  background: #fff;
+}
+
+body[data-page="cp"] .r-legend{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 14px;
+}
+
+body[data-page="cp"] .r-tag{
+  display:inline-flex;
+  align-items:center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: .88rem;
+  border: 1px solid rgba(15,23,42,.12);
+}
+
+body[data-page="cp"] .r-tag-bajo{background: #ffe5e5;}
+body[data-page="cp"] .r-tag-normal{background: #fff7bf;}
+body[data-page="cp"] .r-tag-muy{background: #ffe2b3;}
+body[data-page="cp"] .r-tag-exc{background: #d9f2d9;}
+
+body[data-page="cp"] .r-select{
+  width: 100%;
+  height: 32px;
+  border: 1px solid rgba(15,23,42,.18);
+  border-radius: 999px;
+  background-color: #fff;
+  padding: 0 28px 0 10px;
+  font-weight: 800;
+}
+
+body[data-page="cp"] .r-select.is-bajo{   background-color:#ffe5e5; }
+body[data-page="cp"] .r-select.is-normal{ background-color:#fff7bf; }
+body[data-page="cp"] .r-select.is-muy{    background-color:#ffe2b3; }
+body[data-page="cp"] .r-select.is-exc{    background-color:#d9f2d9; }
+
+body[data-page="cp"] .rubrica{
+  display:flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+body[data-page="cp"] .r-sec{
+  border: 1px solid rgba(15,23,42,.10);
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255,255,255,.85);
+}
+
+body[data-page="cp"] .r-sec-title{
+  padding: 10px 12px;
+  font-weight: 900;
+  background: rgba(30,58,137,.06);
+  border-bottom: 1px solid rgba(15,23,42,.08);
+}
+
+body[data-page="cp"] .r-sec-body{
+  padding: 10px 12px;
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+body[data-page="cp"] .r-row{
+  display:grid;
+  grid-template-columns: 1fr 140px;
+  gap: 12px;
+  align-items: center;
+}
+
+body[data-page="cp"] .r-q{display:flex; gap: 10px; align-items:flex-start; min-width: 0;}
+body[data-page="cp"] .r-code{
+  width: 48px;
+  flex: 0 0 48px;
+  font-weight: 900;
+  color: rgba(2,6,23,.70);
+}
+body[data-page="cp"] .r-text{font-weight: 650; color: rgba(2,6,23,.92); line-height: 1.25;}
+
+@media (max-width: 720px){
+  body[data-page="cp"] .r-row{grid-template-columns: 1fr;}
+  body[data-page="cp"] .r-code{width: 44px; flex-basis: 44px;}
+}
+
+/* =========================
+   Compromiso y Presentismo (cp)
+   Modal / Rubrica: mismos estilos que Evaluaciones (realizar)
+   ========================= */
+
+body[data-page="cp"] .textarea{
+  width: 100%;
+  border: 1px solid rgba(15,23,42,.18);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  resize: vertical;
+  background: #fff;
+}
+
+body[data-page="cp"] .r-legend{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 14px;
+}
+
+body[data-page="cp"] .r-tag{
+  display:inline-flex;
+  align-items:center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: .88rem;
+  border: 1px solid rgba(15,23,42,.12);
+}
+
+body[data-page="cp"] .r-tag-bajo{background: #ffe5e5;}
+body[data-page="cp"] .r-tag-normal{background: #fff7bf;}
+body[data-page="cp"] .r-tag-muy{background: #ffe2b3;}
+body[data-page="cp"] .r-tag-exc{background: #d9f2d9;}
+
+body[data-page="cp"] .r-select{
+  width: 100%;
+  height: 32px;
+  border: 1px solid rgba(15,23,42,.18);
+  border-radius: 999px;
+  background-color: #fff;
+  padding: 0 28px 0 10px;
+  font-weight: 800;
+}
+
+body[data-page="cp"] .r-select.is-bajo{   background-color:#ffe5e5; }
+body[data-page="cp"] .r-select.is-normal{ background-color:#fff7bf; }
+body[data-page="cp"] .r-select.is-muy{    background-color:#ffe2b3; }
+body[data-page="cp"] .r-select.is-exc{    background-color:#d9f2d9; }
+
+body[data-page="cp"] .rubrica{
+  display:flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+body[data-page="cp"] .r-sec{
+  border: 1px solid rgba(15,23,42,.10);
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255,255,255,.85);
+}
+
+body[data-page="cp"] .r-sec-title{
+  padding: 10px 12px;
+  font-weight: 900;
+  background: rgba(30,58,137,.06);
+  border-bottom: 1px solid rgba(15,23,42,.08);
+}
+
+body[data-page="cp"] .r-sec-body{
+  padding: 10px 12px;
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+body[data-page="cp"] .r-row{
+  display:grid;
+  grid-template-columns: 1fr 140px;
+  gap: 12px;
+  align-items: center;
+}
+
+body[data-page="cp"] .r-q{display:flex; gap: 10px; align-items:flex-start; min-width: 0;}
+
+body[data-page="cp"] .r-code{
+  width: 48px;
+  flex: 0 0 48px;
+  font-weight: 900;
+  color: rgba(2,6,23,.70);
+}
+
+body[data-page="cp"] .r-text{font-weight: 650; color: rgba(2,6,23,.92); line-height: 1.25;}
+
+@media (max-width: 720px){
+  body[data-page="cp"] .r-row{grid-template-columns: 1fr;}
+  body[data-page="cp"] .r-code{width: 44px; flex-basis: 44px;}
+}
+
+/* =========================
+   Compromiso y Presentismo (cp)
+   Modal / Rubrica: mismos estilos que Evaluaciones (realizar)
+   ========================= */
+
+body[data-page="cp"] .textarea{
+  width: 100%;
+  border: 1px solid rgba(15,23,42,.18);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  resize: vertical;
+  background: #fff;
+}
+
+/* Leyenda de niveles */
+body[data-page="cp"] .r-legend{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 14px;
+}
+
+body[data-page="cp"] .r-tag{
+  display:inline-flex;
+  align-items:center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: .88rem;
+  border: 1px solid rgba(15,23,42,.12);
+}
+
+body[data-page="cp"] .r-tag-bajo{background: #ffe5e5;}
+body[data-page="cp"] .r-tag-normal{background: #fff7bf;}
+body[data-page="cp"] .r-tag-muy{background: #ffe2b3;}
+body[data-page="cp"] .r-tag-exc{background: #d9f2d9;}
+
+/* Selects coloreados */
+body[data-page="cp"] .r-select{
+  width: 100%;
+  height: 32px;
+  border: 1px solid rgba(15,23,42,.18);
+  border-radius: 999px;
+  background-color: #fff;
+  padding: 0 28px 0 10px;
+  font-weight: 800;
+}
+
+body[data-page="cp"] .r-select.is-bajo{   background-color:#ffe5e5; }
+body[data-page="cp"] .r-select.is-normal{ background-color:#fff7bf; }
+body[data-page="cp"] .r-select.is-muy{    background-color:#ffe2b3; }
+body[data-page="cp"] .r-select.is-exc{    background-color:#d9f2d9; }
+
+/* Contenedor de secciones */
+body[data-page="cp"] .rubrica{
+  display:flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+body[data-page="cp"] .r-sec{
+  border: 1px solid rgba(15,23,42,.10);
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255,255,255,.85);
+}
+
+body[data-page="cp"] .r-sec-title{
+  padding: 10px 12px;
+  font-weight: 900;
+  background: rgba(30,58,137,.06);
+  border-bottom: 1px solid rgba(15,23,42,.08);
+}
+
+body[data-page="cp"] .r-sec-body{
+  padding: 10px 12px;
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Filas de preguntas */
+body[data-page="cp"] .r-row{
+  display:grid;
+  grid-template-columns: 1fr 140px;
+  gap: 12px;
+  align-items: center;
+}
+
+body[data-page="cp"] .r-q{
+  display:flex;
+  gap: 10px;
+  align-items:flex-start;
+  min-width: 0;
+}
+
+body[data-page="cp"] .r-code{
+  width: 48px;
+  flex: 0 0 48px;
+  font-weight: 900;
+  color: rgba(2,6,23,.70);
+}
+
+body[data-page="cp"] .r-text{
+  font-weight: 650;
+  color: rgba(2,6,23,.92);
+  line-height: 1.25;
+}
+
+@media (max-width: 720px){
+  body[data-page="cp"] .r-row{grid-template-columns: 1fr;}
+  body[data-page="cp"] .r-code{width: 44px; flex-basis: 44px;}
+}
+
+/* =========================
+   Compromiso y Presentismo (cp)
+   Modal / Rubrica: mismos estilos que Evaluaciones (realizar)
+   ========================= */
+
+body[data-page="cp"] .textarea{
+  width: 100%;
+  border: 1px solid rgba(15,23,42,.18);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  resize: vertical;
+  background: #fff;
+}
+
+/* Leyenda de niveles */
+body[data-page="cp"] .r-legend{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 14px;
+}
+
+body[data-page="cp"] .r-tag{
+  display:inline-flex;
+  align-items:center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: .88rem;
+  border: 1px solid rgba(15,23,42,.12);
+}
+
+body[data-page="cp"] .r-tag-bajo{background: #ffe5e5;}
+body[data-page="cp"] .r-tag-normal{background: #fff7bf;}
+body[data-page="cp"] .r-tag-muy{background: #ffe2b3;}
+body[data-page="cp"] .r-tag-exc{background: #d9f2d9;}
+
+/* Select de respuesta con color según valor */
+body[data-page="cp"] .r-select{
+  width: 100%;
+  height: 32px;
+  border: 1px solid rgba(15,23,42,.18);
+  border-radius: 999px;
+  background-color: #fff;            /* no pisa la flecha del .select */
+  padding: 0 28px 0 10px;
+  font-weight: 800;
+}
+
+body[data-page="cp"] .r-select.is-bajo{   background-color:#ffe5e5; }
+body[data-page="cp"] .r-select.is-normal{ background-color:#fff7bf; }
+body[data-page="cp"] .r-select.is-muy{    background-color:#ffe2b3; }
+body[data-page="cp"] .r-select.is-exc{    background-color:#d9f2d9; }
+
+/* Estructura de secciones / preguntas */
+body[data-page="cp"] .rubrica{
+  display:flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+body[data-page="cp"] .r-sec{
+  border: 1px solid rgba(15,23,42,.10);
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255,255,255,.85);
+}
+
+body[data-page="cp"] .r-sec-title{
+  padding: 10px 12px;
+  font-weight: 900;
+  background: rgba(30,58,137,.06);
+  border-bottom: 1px solid rgba(15,23,42,.08);
+}
+
+body[data-page="cp"] .r-sec-body{
+  padding: 10px 12px;
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+body[data-page="cp"] .r-row{
+  display:grid;
+  grid-template-columns: 1fr 140px;
+  gap: 12px;
+  align-items: center;
+}
+
+body[data-page="cp"] .r-q{
+  display:flex;
+  gap: 10px;
+  align-items:flex-start;
+  min-width: 0;
+}
+
+body[data-page="cp"] .r-code{
+  width: 48px;
+  flex: 0 0 48px;
+  font-weight: 900;
+  color: rgba(2,6,23,.70);
+}
+
+body[data-page="cp"] .r-text{
+  font-weight: 650;
+  color: rgba(2,6,23,.92);
+  line-height: 1.25;
+}
+
+@media (max-width: 720px){
+  body[data-page="cp"] .r-row{grid-template-columns: 1fr;}
+  body[data-page="cp"] .r-code{width: 44px; flex-basis: 44px;}
+}
+
+/* =========================
+   CP (Compromiso y Presentismo)
+   Ajuste de alineamiento filtros (Gerencia / Sucursal / Estado)
+   ========================= */
+body[data-page="cp"] .cp-filters .inline{
+  height: 40px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  align-items: center;
+}
+
+body[data-page="cp"] .cp-filters .inline > span{
+  margin: 0;
+  font-size: .86rem;
+  line-height: 1;
+  white-space: nowrap;
+  color: #334155;
+}
+
+body[data-page="cp"] .cp-filters .select{
+  height: 28px;
+  line-height: 28px;
+  padding-left: 6px;
+}
+
+
+/* =========================
+   Resultados
+   ========================= */
+
+body[data-page="resultados"] .results-filters{
+  margin-top: 6px;
+  display: grid;
+  grid-template-columns: minmax(240px, 1.2fr) minmax(200px, .9fr) minmax(190px, .7fr) minmax(420px, 1.8fr);
+  gap: 12px;
+  align-items: end;
+}
+
+@media (max-width: 980px){
+  body[data-page="resultados"] .results-filters{
+    display:flex;
+    flex-wrap: wrap;
+  }
+}
+
+body[data-page="resultados"] .results-filters .inline{
+  height: 40px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  align-items: center;
+}
+
+body[data-page="resultados"] .results-filters .inline > span{
+  margin: 0;
+  font-size: .86rem;
+  line-height: 1;
+  white-space: nowrap;
+  color: #334155;
+}
+
+body[data-page="resultados"] .results-filters .select{
+  height: 28px;
+  line-height: 28px;
+  padding-left: 6px;
+}
+
+body[data-page="resultados"] .results-search{
+  min-width: 240px;
+}
+
+body[data-page="resultados"] .results-year{min-width:190px;}
+@media (max-width: 980px){
+  body[data-page="resultados"] .results-year{flex:0 0 190px;}
+  body[data-page="resultados"] .results-search{flex:1 1 360px; min-width:320px;}
+}
+
+/* Buscar: botón "x" para limpiar */
+body[data-page="resultados"] .results-search .search-wrap{
+  position: relative;
+  flex: 1 1 320px;
+  min-width: 240px;
+}
+
+body[data-page="resultados"] .results-search .search{
+  width: 100%;
+  padding-right: 44px; /* espacio para la X */
+}
+
+body[data-page="resultados"] .results-search .search-clear{
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.14);
+  background: #fff;
+  display: none; /* lo prende JS cuando hay texto */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  font-weight: 900;
+  line-height: 1;
+}
+body[data-page="resultados"] .results-search .search-clear:hover{ background:#f1f5f9; }
+
+body[data-page="resultados"] #resReload{
+  justify-self: end;
+  height: 40px;
+  border-radius: 999px;
+}
+
+body[data-page="resultados"] .split-results{
+  margin-top: 6px;
+  grid-template-columns: 360px 1fr;
+  align-items: start;
+}
+
+@media (max-width: 980px){
+  body[data-page="resultados"] .split-results{
+    grid-template-columns: 1fr;
+  }
+}
+
+body[data-page="resultados"] .pane-right{
+  display:flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  text-align: right;
+  min-width: 0;
+}
+
+body[data-page="resultados"] #resSelName{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: .2px;
+  line-height: 1.1;
+}
+
+body[data-page="resultados"] .pane-left{
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+body[data-page="resultados"] #resSelEvaluador{
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #475569;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+body[data-page="resultados"] #resSelFecha{
+  white-space: nowrap;
+}
+
+body[data-page="resultados"] #resPrint{
+  white-space: nowrap;
+}
+
+body[data-page="resultados"] .inner-card{
+  margin-top: 10px;
+}
+
+body[data-page="resultados"] #resEmptyMsg:empty{
+  display:none;
+}
+
+body[data-page="resultados"] .r-list{
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+body[data-page="resultados"] .r-item{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(15,23,42,.10);
+  border-radius: 14px;
+  background: rgba(255,255,255,.90);
+  cursor: pointer;
+  user-select: none;
+}
+
+body[data-page="resultados"] .r-item:hover{
+  background: rgba(30,58,137,.04);
+}
+
+body[data-page="resultados"] 
+body[data-page="resultados"] .r-item.is-done:not(.is-selected){
+  background: rgba(34,197,94,.10); /* verde suave */
+  border-color: rgba(34,197,94,.25);
+}
+body[data-page="resultados"] .r-item.is-pending:not(.is-selected){
+  background: rgba(239,68,68,.10); /* rojo suave */
+  border-color: rgba(239,68,68,.25);
+}
+
+.r-item.is-selected{
+  outline: 2px solid rgba(30,58,137,.45);
+  background: rgba(30,58,137,.05);
+}
+
+body[data-page="resultados"] .r-main{min-width:0; flex:1 1 auto}
+body[data-page="resultados"] .r-name{font-weight: 800; white-space: nowrap; overflow:hidden; text-overflow: ellipsis}
+
+body[data-page="resultados"] .r-action{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.12);
+  background: rgba(255,255,255,.95);
+  color: rgba(30,58,137,.95);
+  flex: 0 0 auto;
+}
+
+body[data-page="resultados"] .r-action:hover{
+  background: rgba(30,58,137,.08);
+}
+
+body[data-page="resultados"] .results-detail-grid{
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+@media (max-width: 980px){
+  body[data-page="resultados"] .results-detail-grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+body[data-page="resultados"] .puntaje-col{
+  border: 1px solid rgba(15,23,42,.10);
+  border-radius: 14px;
+  background: rgba(255,255,255,.90);
+  padding: 10px 12px;
+}
+
+body[data-page="resultados"] .puntaje-title{
+  font-weight: 900;
+  color: rgba(2,6,23,.85);
+  margin-bottom: 8px;
+}
+
+body[data-page="resultados"] .puntaje-box{
+  height: 56px;
+  border-radius: 12px;
+  border: 1px dashed rgba(15,23,42,.18);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 900;
+  color: rgba(2,6,23,.55);
+  background: rgba(248,250,252,.9);
+}
+
+body[data-page="resultados"] .table-area{
+  overflow: hidden;
+}
+
+body[data-page="resultados"] .rubric-table{
+  width: 100%;
+  table-layout: fixed;
+}
+
+body[data-page="resultados"] .rubric-table td,
+body[data-page="resultados"] .rubric-table th{
+  vertical-align: top;
+}
+
+body[data-page="resultados"] .rubric-table td:nth-child(2){
+  word-break: break-word;
+}
+
+body[data-page="resultados"] .rubric-table .col-id{
+  font-weight: 900;
+  color: rgba(2,6,23,.75);
+}
+
+body[data-page="resultados"] .rubric-table tr.r-sec-row td{
+  background: rgba(30,58,137,.08);
+  font-weight: 900;
+  color: rgba(2,6,23,.86);
+  border-top: 1px solid rgba(15,23,42,.10);
+}
+
+/* Tags de valoración (colores) */
+body[data-page="resultados"] .r-tag{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.12);
+  background: rgba(15,23,42,.04);
+  white-space: nowrap;
+}
+
+body[data-page="resultados"] .r-tag-bajo{ background: rgba(220,38,38,.12); border-color: rgba(220,38,38,.25); color: rgba(153,27,27,.95); }
+body[data-page="resultados"] .r-tag-normal{ background: rgba(245,158,11,.14); border-color: rgba(245,158,11,.28); color: rgba(146,64,14,.98); }
+/* "Muy Bien" (antes aparecía como "Muy Bueno" y quedaba azul) */
+body[data-page="resultados"] .r-tag-muy{ background: #ffe2b3; border-color: rgba(245,158,11,.38); color: rgba(146,64,14,.98); }
+body[data-page="resultados"] .r-tag-exc{ background: rgba(22,163,74,.12); border-color: rgba(22,163,74,.22); color: rgba(20,83,45,.98); }
+
+/* C.P. en Resultados */
+body[data-page="resultados"] .cp-tag{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.12);
+  white-space: nowrap;
+}
+body[data-page="resultados"] .cp-tag-falta{
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #fff;
+}
+body[data-page="resultados"] .cp-tag-noeval{
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+
+/* Impresión (PDF) */
+@media print{
+
+  header, nav, footer,
+  body[data-page="resultados"] .results-filters,
+  body[data-page="resultados"] .subhead,
+  body[data-page="resultados"] .pane:first-child,
+  body[data-page="resultados"] #resPrint,
+  body[data-page="resultados"] #resEmptyMsg,
+  body[data-page="resultados"] .puntaje-col{
+    display:none !important;
+  }
+
+  body{ background:#fff !important; }
+  .container{ max-width: none !important; width: 100% !important; }
+  .card{ box-shadow: none !important; border: none !important; }
+  body[data-page="resultados"] .split-results{ grid-template-columns: 1fr !important; }
+  body[data-page="resultados"] .inner-card{ margin-top: 0 !important; }
+
+  /* En impresión: quitar sticky header y achicar ancho real de la tabla */
+  body[data-page="resultados"] .table-area{ overflow: visible !important; }
+  body[data-page="resultados"] thead th{ position: static !important; top:auto !important; }
+  body[data-page="resultados"] .rubric-table{
+    width: auto !important;
+    min-width: 0 !important;
+    display: inline-table !important;
+    table-layout: auto !important;
+  }
+  body[data-page="resultados"] .rubric-table td:nth-child(2){
+    word-break: normal !important;
+    white-space: normal !important;
+  }
+}
+
+/* =========================
+   RESULTADOS (ajustes UI)
+   ========================= */
+
+body[data-page="resultados"] .split.split-results{
+  grid-template-columns: 360px 1fr;
+  align-items:start;
+}
+
+body[data-page="resultados"] .results-filters{
+  flex-wrap: nowrap;
+  align-items: center;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+body[data-page="resultados"] .results-filters::-webkit-scrollbar{height:8px}
+body[data-page="resultados"] .results-filters::-webkit-scrollbar-thumb{background:rgba(15,23,42,.18);border-radius:999px}
+
+body[data-page="resultados"] #resReload{
+  margin-left: auto;
+  height: 38px;
+  padding: 0 16px;
+  white-space: nowrap;
+}
+
+body[data-page="resultados"] .pane-evaluados{
+  max-width: 360px;
+}
+
+body[data-page="resultados"] .r-list{
+  display:grid;
+  gap:10px;
+}
+
+body[data-page="resultados"] .r-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  border:1px solid rgba(15,23,42,.12);
+  border-radius:16px;
+  padding:12px 12px;
+  background:#fff;
+  cursor:pointer;
+}
+body[data-page="resultados"] .r-item:hover{background:#f8fafc}
+body[data-page="resultados"] .r-item.is-selected{outline:3px solid rgba(30,58,137,.18); border-color: rgba(30,58,137,.35)}
+
+/* Estado evaluado (Resultados) */
+body[data-page="resultados"] .r-item.is-pending{
+  background: rgba(239,68,68,.14);
+  border-color: rgba(239,68,68,.38);
+}
+body[data-page="resultados"] .r-item.is-done{
+  background: rgba(34,197,94,.14);
+  border-color: rgba(34,197,94,.38);
+}
+
+/* Mantener color aun si está seleccionado */
+body[data-page="resultados"] .r-item.is-selected.is-pending{ background: rgba(239,68,68,.14) !important; }
+body[data-page="resultados"] .r-item.is-selected.is-done{ background: rgba(34,197,94,.14) !important; }
+
+/* Hover con el mismo contraste */
+body[data-page="resultados"] .r-item.is-pending:hover{ background: rgba(239,68,68,.18); }
+body[data-page="resultados"] .r-item.is-done:hover{ background: rgba(34,197,94,.18); }
+
+body[data-page="resultados"] .r-name{
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--text);
+}
+
+body[data-page="resultados"] .r-action{
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.12);
+  background: #fff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+body[data-page="resultados"] .r-action:hover{background:#f1f5f9}
+
+body[data-page="resultados"] .pane-detalle{overflow-x:hidden}
+/* Evitar que la tabla empuje el ancho del layout */
+body[data-page="resultados"] .table-area{overflow: auto; max-width: 100%}
+
+/* Contenedor un poco más ancho (sin exagerar) para evitar solapes */
+body[data-page="resultados"] main.container{ max-width: 1280px; }
+
+/* Badge de cantidad de evaluaciones (azul oscuro) */
+body[data-page="resultados"] .res-multi-count{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width: 28px;
+  height: 22px;
+  margin-left: 8px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 2px solid #1E3A89;
+  color: #1E3A89;
+  background: rgba(30,58,137,.06);
+  font-weight: 900;
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* Selector de evaluación (Resultados) */
+body[data-page="resultados"] .res-eval-pick{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  margin-top: 8px;
+}
+body[data-page="resultados"] .res-eval-label{
+  font-weight: 900;
+  color: #1E3A89;
+  white-space: nowrap;
+}
+body[data-page="resultados"] .res-eval-select{
+  height: 38px;
+  padding: 0 34px 0 12px;
+  border: 1.5px solid #1E3A89;
+  border-radius: 14px;
+  background-color: #fff;
+  font-weight: 800;
+  color: #0f172a;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath fill='%231E3A89' d='M5.7 7.5a1 1 0 0 1 1.4 0L10 10.4l2.9-2.9a1 1 0 1 1 1.4 1.4l-3.6 3.6a1 1 0 0 1-1.4 0L5.7 8.9a1 1 0 0 1 0-1.4Z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 18px;
+}
+
+/* Observaciones (Resultados - detalle) */
+body[data-page="resultados"] .res-obs{
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(15,23,42,.18);
+  font-size: 13px;
+  line-height: 1.35;
+}
+body[data-page="resultados"] .res-obs-row{
+  display:block;
+  margin: 6px 0;
+}
+body[data-page="resultados"] .res-obs-label{
+  font-weight: 900;
+  color: rgba(15,23,42,.86);
+  margin-right: 8px;
+}
+body[data-page="resultados"] .res-obs-text{
+  color: rgba(15,23,42,.92);
+  white-space: pre-wrap;
+}
+
+/* Evitar corrimientos por min-width global */
+body[data-page="resultados"] table.rubric-table{
+  min-width: 0 !important;
+  table-layout: fixed;
+}
+body[data-page="resultados"] table.rubric-table th:nth-child(2),
+body[data-page="resultados"] table.rubric-table td:nth-child(2){
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Encabezado print (solo en impresión) */
+body[data-page="resultados"] .res-print-header{display:none}
+body[data-page="resultados"] .res-print-name{
+  font-weight: 900;
+  font-size: 16px;
+  color: #0f172a;
+}
+
+/* Botón imprimir azul lleno (solo resultados) */
+body[data-page="resultados"] .btn-print{
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid #1E3A89;
+  background: #1E3A89;
+  color: #fff;
+  font-weight: 800;
+}
+body[data-page="resultados"] .btn-print:hover{filter: brightness(0.95)}
+
+/* ===== RESULTADOS: ajustes solicitados (2026-01-21) ===== */
+
+/* Sin botón Recargar: reacomodar grilla de filtros */
+body[data-page="resultados"] .results-filters{
+  grid-template-columns:
+    minmax(220px, 1.1fr)
+    minmax(180px, .9fr)
+    110px
+    minmax(260px, 1.6fr);
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* Columna Evaluados más angosta para dar espacio a la tabla */
+body[data-page="resultados"] .split-results,
+body[data-page="resultados"] .split.split-results{
+  grid-template-columns: 280px minmax(0, 1fr);
+}
+
+body[data-page="resultados"] .pane-evaluados{ max-width: 280px; }
+
+/* Items Evaluados: menos alto y un poco más compactos */
+body[data-page="resultados"] .r-item{
+  padding: 4px 8px;
+  border-radius: 14px;
+}
+body[data-page="resultados"] .r-name{
+  font-size: 15px;
+}
+body[data-page="resultados"] .r-action{
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+}
+
+/* Botón Imprimir: centrar verticalmente en su contenedor */
+body[data-page="resultados"] .pane-head{
+  align-items: center;
+  min-height: 44px;
+}
+body[data-page="resultados"] .pane-right{
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+body[data-page="resultados"] #resPrint{
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tabla: ajustar anchos y sumar columna Puntaje */
+body[data-page="resultados"] table.rubric-table th.col-num,
+body[data-page="resultados"] table.rubric-table td.col-id{
+  /* más angosta para evitar solapamientos y ganar espacio */
+  width: 44px;
+}
+
+/* =========================
+   DASHBOARD (layout fixes)
+   ========================= */
+
+/* Evitar desborde horizontal en grillas/tablas del Dashboard */
+body[data-page="dashboard"] .dash-bottom-3,
+body[data-page="dashboard"] .dash-bottom-3 > section{
+  min-width: 0;
+}
+
+/* Tablas dentro del dashboard: no forzar min-width global */
+body[data-page="dashboard"] .table-area{
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+body[data-page="dashboard"] .table-area table{
+  min-width: 0;
+  table-layout: fixed;
+}
+
+body[data-page="dashboard"] .table-area th:first-child,
+body[data-page="dashboard"] .table-area td:first-child{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* Columna # / código: menos padding para que el ancho reduzca de verdad */
+body[data-page="resultados"] table.rubric-table th.col-num,
+body[data-page="resultados"] table.rubric-table td.col-id{
+  padding-left: 6px;
+  padding-right: 6px;
+  text-align: center;
+}
+body[data-page="resultados"] table.rubric-table th.col-val,
+body[data-page="resultados"] table.rubric-table td.col-val{
+  width: 130px;
+}
+body[data-page="resultados"] table.rubric-table th.col-score,
+body[data-page="resultados"] table.rubric-table td.col-score{
+  width: 88px;
+}
+
+/* Líneas verticales igual a horizontales */
+body[data-page="resultados"] table.rubric-table th,
+body[data-page="resultados"] table.rubric-table td{
+  border-right: 1px solid rgba(226,232,240,.8);
+}
+body[data-page="resultados"] table.rubric-table th:last-child,
+body[data-page="resultados"] table.rubric-table td:last-child{
+  border-right: 0;
+}
+
+/* ===== RESULTADOS: reemplazo texto Muy Bueno -> Muy Bien (CSS) =====
+   Nota: esto corrige el texto del chip en la TABLA de Resultados cuando viene como “Muy Bueno”.
+   Se aplica solo a la página Resultados y solo al tag .r-tag-muy.
+*/
+body[data-page="resultados"] .r-tag-muy{
+  position: relative;
+  /* ocultamos el texto original (p.ej. “Muy Bueno”) sin romper el tamaño del chip */
+  color: transparent !important;
+}
+
+body[data-page="resultados"] .r-tag-muy::after{
+  content: "Muy Bien";
+  position: absolute;
+  left: 10px;                 /* coincide con padding horizontal del chip */
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  white-space: nowrap;
+  color: rgba(146,64,14,.98);
+}
+
+/* ===== Resultados: Chip Puntaje total + colores por rango ===== */
+body[data-page="resultados"] .pane-right{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Centrado + negrita en columna Puntaje */
+body[data-page="resultados"] .rubric-table th.col-score,
+body[data-page="resultados"] .rubric-table td.col-score{
+  text-align: center;
+}
+body[data-page="resultados"] .rubric-table td.col-score{
+  font-weight: 900;
+}
+
+/* Chip */
+body[data-page="resultados"] .puntaje-chip{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.10);
+  background: rgba(30,58,137,.08);
+}
+body[data-page="resultados"] .puntaje-chip-label{
+  background: #000;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+}
+body[data-page="resultados"] .puntaje-chip-value{
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 900;
+  line-height: 1;
+  min-width: 92px;
+  text-align: center;
+}
+
+/* Rangos de color */
+body[data-page="resultados"] .puntaje-v-rojo{
+  background: #d32f2f;
+  color: #fff;
+}
+body[data-page="resultados"] .puntaje-v-amarillo{
+  background: #fbc02d;
+  color: #000;
+}
+body[data-page="resultados"] .puntaje-v-verdeclaro{
+  background: #a5d6a7;
+  color: #000;
+}
+body[data-page="resultados"] .puntaje-v-verdoscuro{
+  background: #1b5e20;
+  color: #fff;
+}
+
+/* =========================
+   DASHBOARD
+   ========================= */
+
+body[data-page="dashboard"] .page-head{
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+body[data-page="dashboard"] .page-head h1{
+  margin: 0;
+}
+
+body[data-page="dashboard"] .page-actions{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+
+/* En dashboard, los filtros viven en la misma barra de acciones */
+body[data-page="dashboard"] .page-actions .field.inline{
+  font-weight: 600;
+}
+
+body[data-page="dashboard"] .page-actions .select{
+  min-width: 170px;
+}
+
+body[data-page="dashboard"] .dash-filters{
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 10px;
+}
+
+body[data-page="dashboard"] .dash-filters .field{
+  grid-column: span 4;
+}
+
+@media (max-width: 920px){
+  body[data-page="dashboard"] .page-actions{ flex-wrap: wrap; }
+  body[data-page="dashboard"] .dash-filters .field{ grid-column: span 6; }
+}
+
+@media (max-width: 560px){
+  body[data-page="dashboard"] .dash-filters .field{ grid-column: span 12; }
+}
+
+body[data-page="dashboard"] .kpi-row{
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 10px;
+}
+
+/* =========================
+   Dashboard · Tarjetas (Elegibilidad / Asignaciones / Evaluaciones)
+   - hasta 6 por fila (responsive)
+   - hover + acento superior
+   ========================= */
+body[data-page="dashboard"] .dash-metrics{
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 1100px){
+  body[data-page="dashboard"] .dash-metrics{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 900px){
+  body[data-page="dashboard"] .dash-metrics{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 640px){
+  body[data-page="dashboard"] .dash-metrics{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 420px){
+  body[data-page="dashboard"] .dash-metrics{ grid-template-columns: 1fr; }
+}
+
+body[data-page="dashboard"] .metric-card{
+  position: relative;
+  /* Permitimos que el “hint” salga por fuera de la card sin tapar el contenido */
+  overflow: visible;
+  background: rgba(255,255,255,.96);
+  border: 1px solid rgba(15,23,42,.10);
+  border-radius: 16px;
+  padding: 10px 12px;
+  min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 8px 22px rgba(15,23,42,.06);
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+
+body[data-page="dashboard"] .metric-card::before{
+  content:"";
+  position:absolute;
+  left:0; top:0;
+  height:3px; width:100%;
+  background: linear-gradient(90deg, rgba(30,58,137,.95), rgba(56,189,248,.9));
+  opacity: .95;
+}
+
+body[data-page="dashboard"] .metric-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(15,23,42,.10);
+  border-color: rgba(30,58,137,.22);
+}
+
+
+
+/* Dashboard · card clickable + hint */
+body[data-page="dashboard"] .metric-card.metric-click{
+  cursor: pointer;
+  position: relative; /* para tooltip */
+}
+body[data-page="dashboard"] .metric-card.metric-click:focus{
+  outline: 3px solid rgba(56,189,248,.35);
+  outline-offset: 2px;
+}
+/* Tooltip fuera de la card (no tapa el % / subtítulos) */
+body[data-page="dashboard"] .metric-card.metric-click::after{
+  content: "Hacer click para ver\A "
+           "detalle de los empleados\A "
+           "Sin Asignacion";
+
+  /* Tooltip debajo de la card (no tapa contenido) */
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 10px);
+  right: auto;
+  bottom: auto;
+
+  width: clamp(220px, 22vw, 300px);
+
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  color: #fff;
+  background: rgba(15, 23, 42, .88); /* gris oscuro */
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 10px 26px rgba(15,23,42,.18);
+  padding: 10px 12px;
+  border-radius: 14px;
+
+  opacity: 0;
+  transform: translate(-50%, -4px);
+  transition: opacity .14s ease, transform .14s ease;
+  pointer-events: none;
+  z-index: 60;
+  white-space: pre-line;
+}
+body[data-page="dashboard"] .metric-card.metric-click:hover::after,
+body[data-page="dashboard"] .metric-card.metric-click:focus-visible::after{
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Dashboard · card clickable + hint (Completas) */
+body[data-page="dashboard"] .metric-card.metric-click-ok{
+  cursor: pointer;
+  position: relative;
+}
+body[data-page="dashboard"] .metric-card.metric-click-ok:focus{
+  outline: 3px solid rgba(56,189,248,.35);
+  outline-offset: 2px;
+}
+body[data-page="dashboard"] .metric-card.metric-click-ok::after{
+  content: "Hacer click para ver\A "
+           "detalle de los\A "
+           "empleados con\A "
+           "Evaluacion Completa";
+
+  /* Tooltip debajo de la card (no tapa contenido) */
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 10px);
+  right: auto;
+  bottom: auto;
+
+  width: clamp(220px, 22vw, 300px);
+
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  color: #fff;
+  background: rgba(15, 23, 42, .88); /* gris oscuro */
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 10px 26px rgba(15,23,42,.18);
+  padding: 10px 12px;
+  border-radius: 14px;
+
+  opacity: 0;
+  transform: translate(-50%, -4px);
+  transition: opacity .14s ease, transform .14s ease;
+  pointer-events: none;
+  z-index: 60;
+  white-space: pre-line;
+}
+body[data-page="dashboard"] .metric-card.metric-click-ok:hover::after,
+body[data-page="dashboard"] .metric-card.metric-click-ok:focus-visible::after{
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+
+/* Modal del detalle: arriba y centrado */
+body[data-page="dashboard"] #dNoAsigBackdrop{
+  align-items: flex-start;
+  padding-top: 86px;
+}
+
+/* Modal “Sin asignación”: un poco más angosto (más compacto) */
+body[data-page="dashboard"] #dNoAsigBackdrop .modal{
+  width: min(640px, 100%);
+}
+
+/* Tabla del modal: columnas más compactas */
+body[data-page="dashboard"] #dNoAsigBackdrop .compact-table{
+  table-layout: fixed;
+}
+body[data-page="dashboard"] #dNoAsigBackdrop .compact-table th:nth-child(1),
+body[data-page="dashboard"] #dNoAsigBackdrop .compact-table td:nth-child(1){
+  width: 50%;
+}
+body[data-page="dashboard"] #dNoAsigBackdrop .compact-table th:nth-child(2),
+body[data-page="dashboard"] #dNoAsigBackdrop .compact-table td:nth-child(2){
+  width: 38%;
+}
+
+/* Modal (Sin asignación): un poco más angosto para que las columnas no queden tan “separadas” */
+body[data-page="dashboard"] #dNoAsigBackdrop .modal{
+  width: min(640px, 100%);
+}
+
+/* Tabla del modal: columnas más compactas */
+body[data-page="dashboard"] #dNoAsigBackdrop .compact-table th,
+body[data-page="dashboard"] #dNoAsigBackdrop .compact-table td{
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+
+/* Modal “Completas”: arriba y centrado */
+body[data-page="dashboard"] #dOkBackdrop{
+  align-items: flex-start;
+  padding-top: 86px;
+}
+
+/* Modal “Completas”: mismo ancho que Sin asignación */
+body[data-page="dashboard"] #dOkBackdrop .modal{
+  width: min(640px, 100%);
+}
+
+/* Tabla del modal Completas: columnas compactas */
+body[data-page="dashboard"] #dOkBackdrop .compact-table{
+  table-layout: fixed;
+}
+body[data-page="dashboard"] #dOkBackdrop .compact-table th:nth-child(1),
+body[data-page="dashboard"] #dOkBackdrop .compact-table td:nth-child(1){
+  width: 50%;
+}
+body[data-page="dashboard"] #dOkBackdrop .compact-table th:nth-child(2),
+body[data-page="dashboard"] #dOkBackdrop .compact-table td:nth-child(2){
+  width: 38%;
+}
+
+/* acentos por posición (orden fijo de las 9 tarjetas) */
+body[data-page="dashboard"] .dash-metrics .metric-card:nth-child(1)::before{ background: linear-gradient(90deg, rgba(51,65,85,.95), rgba(148,163,184,.9)); }
+body[data-page="dashboard"] .dash-metrics .metric-card:nth-child(2)::before{ background: linear-gradient(90deg, rgba(30,58,137,.95), rgba(59,130,246,.9)); }
+body[data-page="dashboard"] .dash-metrics .metric-card:nth-child(3)::before{ background: linear-gradient(90deg, rgba(14,116,144,.95), rgba(34,211,238,.9)); }
+
+body[data-page="dashboard"] .dash-metrics .metric-card:nth-child(4)::before{ background: linear-gradient(90deg, rgba(67,56,202,.95), rgba(99,102,241,.9)); }
+body[data-page="dashboard"] .dash-metrics .metric-card:nth-child(5)::before{ background: linear-gradient(90deg, rgba(30,58,137,.95), rgba(56,189,248,.9)); }
+body[data-page="dashboard"] .dash-metrics .metric-card:nth-child(6)::before{ background: linear-gradient(90deg, rgba(148,163,184,.95), rgba(226,232,240,.9)); }
+
+body[data-page="dashboard"] .dash-metrics .metric-card:nth-child(7)::before{ background: linear-gradient(90deg, rgba(67,56,202,.95), rgba(56,189,248,.9)); }
+body[data-page="dashboard"] .dash-metrics .metric-card:nth-child(8)::before{ background: linear-gradient(90deg, rgba(22,163,74,.95), rgba(134,239,172,.9)); }
+body[data-page="dashboard"] .dash-metrics .metric-card:nth-child(9)::before{ background: linear-gradient(90deg, rgba(245,158,11,.95), rgba(253,230,138,.9)); }
+
+body[data-page="dashboard"] .metric-title{
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(2,6,23,.86);
+}
+
+body[data-page="dashboard"] .metric-value{
+  font-size: 24px;
+  font-weight: 950;
+  letter-spacing: .2px;
+  line-height: 1;
+}
+
+/* Números en rojo: Sin asignación + Pendientes */
+body[data-page="dashboard"] #dCardSinAsig .metric-value,
+body[data-page="dashboard"] .metric-card.metric-pend .metric-value{
+  color: #dc2626;
+}
+
+body[data-page="dashboard"] .metric-sub{
+  font-size: 11.5px;
+  color: rgba(2,6,23,.66);
+}
+
+/* Variantes sutiles para Completas/Pendientes */
+body[data-page="dashboard"] .metric-card.metric-ok{
+  background: rgba(240,253,244,.9);
+  border-color: rgba(22,163,74,.18);
+}
+body[data-page="dashboard"] .metric-card.metric-ok .metric-value{
+  color: #166534;
+}
+body[data-page="dashboard"] .metric-card.metric-pend{
+  background: rgba(255,247,237,.92);
+  border-color: rgba(245,158,11,.22);
+}
+body[data-page="dashboard"] .kpi{
+  grid-column: span 2;
+  background: rgba(30,58,137,.06);
+  border: 1px solid rgba(30,58,137,.18);
+  border-radius: 14px;
+  padding: 10px 12px;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+body[data-page="dashboard"] .kpi.big{ grid-column: span 4; }
+
+@media (max-width: 920px){
+  body[data-page="dashboard"] .kpi{ grid-column: span 6; }
+  body[data-page="dashboard"] .kpi.big{ grid-column: span 12; }
+}
+
+body[data-page="dashboard"] .kpi .kpi-label{
+  font-size: 12px;
+  opacity: .75;
+}
+
+body[data-page="dashboard"] .kpi .kpi-value{
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+body[data-page="dashboard"] .dash-grid{
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+body[data-page="dashboard"] .dash-span-2{
+  grid-column: span 2;
+}
+
+
+@media (max-width: 980px){
+  body[data-page="dashboard"] .dash-grid{ grid-template-columns: 1fr; }
+}
+
+body[data-page="dashboard"] .card{
+  background: #fff;
+  border: 1px solid #e6e9ef;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 1px 0 rgba(0,0,0,.02);
+}
+
+body[data-page="dashboard"] .card h2{
+  margin: 0 0 10px 0;
+  font-size: 15px;
+}
+
+body[data-page="dashboard"] .bar-row{
+  display: grid;
+  grid-template-columns: 160px 1fr 120px;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #eef1f6;
+}
+
+body[data-page="dashboard"] .bar-row:last-child{ border-bottom: 0; }
+
+body[data-page="dashboard"] .bar-label{
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body[data-page="dashboard"] .bar-track{
+  height: 10px;
+  background: #eef1f6;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+body[data-page="dashboard"] .bar-fill{
+  height: 100%;
+  background: #1E3A89;
+  border-radius: 999px;
+}
+
+body[data-page="dashboard"] .bar-meta{
+  text-align: right;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+body[data-page="dashboard"] .bar-pct{
+  margin-left: 6px;
+  opacity: .75;
+}
+
+body[data-page="dashboard"] .muted{
+  opacity: .7;
+}
+
+@media print{
+  body[data-page="dashboard"] .dash-filters,
+  body[data-page="dashboard"] .page-actions,
+  body[data-page="dashboard"] nav{
+    display: none !important;
+  }
+
+  /* En impresión: forzar layout en 1 columna para evitar páginas “anchas” */
+  body[data-page="dashboard"] .dash-grid{ grid-template-columns: 1fr !important; }
+  body[data-page="dashboard"] .dash-row-split{ grid-template-columns: 1fr !important; }
+  body[data-page="dashboard"] .dash-bottom-3{ grid-template-columns: 1fr !important; }
+
+  /* Charts: evitar deformaciones (no estirar canvas en alto) */
+  body[data-page="dashboard"] .chart-wrap{ height: auto !important; }
+  body[data-page="dashboard"] .chart-wrap canvas{
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+
+  /* Pie (Alertas C.P.): evitar que se parta en 2 hojas (título en una y gráfico en otra)
+     forzando una altura acotada en impresión y evitando cortes entre título y canvas. */
+  body[data-page="dashboard"] #secLowCp .dash-chart-head{
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  body[data-page="dashboard"] #secLowCp .chart-wrap{
+    height: 320px !important;
+  }
+  body[data-page="dashboard"] #secLowCp .chart-wrap canvas{
+    height: 320px !important;
+  }
+
+  /* Tablas: permitir que “respiren” en impresión */
+  body[data-page="dashboard"] .table-area{ overflow: visible !important; }
+
+  /* Evitar cortes feos dentro de tarjetas */
+  body[data-page="dashboard"] .card{
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+
+
+/* Dashboard: Tablas inferiores (Completas / Gerencias / Sucursales) */
+.dash-bottom-3 .compact-table{
+  table-layout: auto;
+  width: 100%;
+}
+.dash-bottom-3 .compact-table th:nth-child(2),
+.dash-bottom-3 .compact-table td:nth-child(2){
+  width: 132px;
+  text-align: center;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-left: 1px solid var(--line);
+}
+.dash-bottom-3 .compact-table th:nth-child(1),
+.dash-bottom-3 .compact-table td:nth-child(1){
+  padding-right: 8px;
+}
+.dash-bottom-3 .compact-table td.td-score{
+  text-align: center;
+}
+
+
+/* Dashboard: en card "Gerencias" permitir que el nombre envuelva en 2+ líneas (sin cortar con ... ) */
+body[data-page="dashboard"] #secBottomGerencias .table-area th:first-child,
+body[data-page="dashboard"] #secBottomGerencias .table-area td:first-child{
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+
+
+
+/* ===== Listado Evaluaciones: anchos diferenciados en filtros (no afecta otras páginas) ===== */
+body[data-page="listado_evaluaciones"] .le-filters .filter{
+  flex: 0 0 auto !important;
+}
+
+body[data-page="listado_evaluaciones"] .le-filters .le-filter-evaluador{
+  flex: 0 0 240px !important;
+}
+
+body[data-page="listado_evaluaciones"] .le-filters .le-filter-sucursal{
+  flex: 0 0 200px !important;
+}
+
+body[data-page="listado_evaluaciones"] .le-filters .le-filter-gerencia{
+  flex: 0 0 220px !important;
+}
+
+body[data-page="listado_evaluaciones"] .le-filters .le-filter-estado{
+  flex: 0 0 170px !important;
+}
+
+body[data-page="listado_evaluaciones"] .le-filters .search-filter{
+  flex: 1 1 320px !important;
+  min-width: 260px !important;
+}
+
+
+/* =============================
+   LISTADO EVALUACIONES (v7)
+   Fix: Buscar no se salga del body
+   ============================= */
+body[data-page="listado_evaluaciones"] .toolbar{
+  width: 100%;
+  flex-wrap: wrap;           /* permite que Buscar baje si no entra */
+}
+
+body[data-page="listado_evaluaciones"] .toolbar .filter.le-buscar{
+  flex: 1 1 360px;           /* toma el espacio restante */
+  min-width: 260px;          /* pero puede achicarse */
+  max-width: 100%;
+}
+
+body[data-page="listado_evaluaciones"] .toolbar .filter.le-buscar input{
+  width: 100%;
+  min-width: 0;              /* clave: permite encoger dentro del flex */
+}
+
+
+/* Dashboard: buscador + scroll para tabla Completas */
+body[data-page="dashboard"] #secBottomCompletas .table-tools{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:8px 0 10px;
+}
+body[data-page="dashboard"] #secBottomCompletas .table-search{
+  flex:1 1 auto;
+  min-width: 0;
+  height: 34px;
+  border-radius: 12px;
+}
+/* Para que Completas no crezca infinito */
+body[data-page="dashboard"] #secBottomCompletas .table-area{
+  max-height: 520px;
+}
+/* Encabezado fijo dentro del scroll */
+body[data-page="dashboard"] #secBottomCompletas .table-area thead th{
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+
+/* flags.html: desactivar sticky nativo del thead (se usa clon fijo por JS) */
+body[data-page="flags"] .flags-table-card thead th{ position:static; top:auto; z-index:auto; }
+
+
+/* Resultados: layout 2 columnas (Evaluados | Detalle) */
+
+body[data-page="resultados"] .results-layout{
+  display: grid;
+  grid-template-columns: 320px 1px minmax(0, 1fr);
+  column-gap: 16px;
+  align-items: start;
+}
+
+/* Separación visual entre columnas */
+body[data-page="resultados"] .results-sep{
+  align-self: stretch;
+  width: 1px;
+  background: rgba(15,23,42,.10);
+  border-radius: 999px;
+}
+
+/* Evitar que el detalle empuje el layout */
+body[data-page="resultados"] .pane-detalle{ min-width: 0; }
+
+/* Mobile: una sola columna */
+@media (max-width: 980px){
+  body[data-page="resultados"] .results-layout{
+    grid-template-columns: 1fr;
+    row-gap: 14px;
+  }
+  body[data-page="resultados"] .results-sep{ display: none; }
+}
+
+
+/* ===== Resultados: filtros superiores sin solapamiento (scoped) ===== */
+body[data-page="resultados"] .results-filters{
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(160px, 0.9fr) minmax(170px, 0.6fr) minmax(260px, 1.3fr);
+  gap: 12px;
+  align-items: end;
+}
+body[data-page="resultados"] .results-filters > *{
+  min-width: 0;
+}
+body[data-page="resultados"] .results-filters .results-search .search-wrap{
+  width: 100%;
+}
+body[data-page="resultados"] .results-filters .results-search .search{
+  width: 100%;
+}
+@media (max-width: 1100px){
+  body[data-page="resultados"] .results-filters{
+    grid-template-columns: 1fr 1fr;
+  }
+  body[data-page="resultados"] .results-filters .results-search{
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 650px){
+  body[data-page="resultados"] .results-filters{
+    grid-template-columns: 1fr;
+  }
+  body[data-page="resultados"] .results-filters .results-search{
+    grid-column: auto;
+  }
+}
+
+/* =========================================================
+   INICIO · Opción B (Bootstrap Soft) — scopeado solo a Inicio
+   Nota: no toca el header, solo body/cards/inputs/tabla/botones.
+   ========================================================= */
+body[data-page="inicio"]{
+  background: linear-gradient(180deg, #f1f5ff 0%, var(--bg) 28%, var(--bg) 100%);
+}
+
+body[data-page="inicio"] .card{
+  border: 1px solid rgba(30,58,137,.14);
+  border-radius: 20px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+  box-shadow: 0 14px 34px rgba(2,6,23,.10);
+}
+
+body[data-page="inicio"] .page-title{
+  letter-spacing: -.01em;
+}
+
+body[data-page="inicio"] .pill{
+  border: 1px solid rgba(30,58,137,.18);
+  background: rgba(30,58,137,.06);
+  color: #0f172a;
+  border-radius: 999px;
+}
+
+body[data-page="inicio"] .toolbar{
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(30,58,137,.04);
+  border: 1px solid rgba(30,58,137,.10);
+  gap: 12px;
+}
+
+body[data-page="inicio"] .filter label{
+  color: #0f172a;
+  font-weight: 600;
+}
+
+body[data-page="inicio"] .select,
+body[data-page="inicio"] .search{
+  border-radius: 14px;
+  border: 1px solid rgba(148,163,184,.85);
+  background: rgba(255,255,255,.95);
+  box-shadow: 0 1px 0 rgba(2,6,23,.04);
+  transition: box-shadow .15s ease, border-color .15s ease, transform .05s ease;
+}
+
+body[data-page="inicio"] .select:focus,
+body[data-page="inicio"] .search:focus{
+  outline: none;
+  border-color: rgba(30,58,137,.55);
+  box-shadow: 0 0 0 .22rem rgba(30,58,137,.16);
+}
+
+body[data-page="inicio"] .select:active,
+body[data-page="inicio"] .search:active{
+  transform: translateY(1px);
+}
+
+/* Tabla “soft data-grid” */
+body[data-page="inicio"] .inicio-table-card .table-wrap{
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(30,58,137,.12);
+  background: #fff;
+}
+
+body[data-page="inicio"] table thead th{
+  background: linear-gradient(180deg, rgba(30,58,137,.12) 0%, rgba(30,58,137,.06) 100%);
+  color: #1E3A89;
+  font-weight: 800;
+  border-bottom: 1px solid rgba(30,58,137,.18);
+}
+
+body[data-page="inicio"] table tbody td{
+  border-bottom: 1px solid rgba(2,6,23,.06);
+}
+
+body[data-page="inicio"] table tbody tr:nth-child(even){
+  background: rgba(30,58,137,.02);
+}
+
+body[data-page="inicio"] table tbody tr:hover{
+  background: rgba(30,58,137,.06);
+}
+
+/* =========================================================
+   FLAGS · Igualar look & feel de Inicio (Opción B)
+   - No cambia estructura HTML, solo estética de:
+     pills, toolbar/filtros, inputs y encabezado de tabla.
+   ========================================================= */
+
+body[data-page="flags"] .pill{
+  border: 1px solid rgba(30,58,137,.18);
+  background: rgba(30,58,137,.06);
+  color: #0f172a;
+  border-radius: 999px;
+}
+
+body[data-page="flags"] .toolbar{
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(30,58,137,.04);
+  border: 1px solid rgba(30,58,137,.10);
+  gap: 12px;
+}
+
+body[data-page="flags"] .filter label{
+  color: #0f172a;
+  font-weight: 600;
+}
+
+body[data-page="flags"] .select,
+body[data-page="flags"] .search{
+  border-radius: 14px;
+  border: 1px solid rgba(148,163,184,.85);
+  background: rgba(255,255,255,.95);
+  box-shadow: 0 1px 0 rgba(2,6,23,.04);
+  transition: box-shadow .15s ease, border-color .15s ease, transform .05s ease;
+}
+
+body[data-page="flags"] .select:focus,
+body[data-page="flags"] .search:focus{
+  outline: none;
+  border-color: rgba(30,58,137,.55);
+  box-shadow: 0 0 0 .22rem rgba(30,58,137,.16);
+}
+
+body[data-page="flags"] .select:active,
+body[data-page="flags"] .search:active{
+  transform: translateY(1px);
+}
+
+/* Tabla “soft data-grid” (como Inicio) */
+body[data-page="flags"] .flags-table-card .table-wrap{
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(30,58,137,.12);
+  background: #fff;
+}
+
+body[data-page="flags"] table.flags-table thead th{
+  background: linear-gradient(180deg, rgba(30,58,137,.12) 0%, rgba(30,58,137,.06) 100%);
+  color: #1E3A89;
+  font-weight: 800;
+  border-bottom: 1px solid rgba(30,58,137,.18);
+}
+
+body[data-page="flags"] table.flags-table tbody td{
+  border-bottom: 1px solid rgba(2,6,23,.06);
+}
+
+body[data-page="flags"] table.flags-table tbody tr:nth-child(even) td{
+  background: rgba(30,58,137,.02);
+}
+
+body[data-page="flags"] table.flags-table tbody tr:hover td{
+  background: rgba(30,58,137,.06);
+}
+
+/* Botón Asignar (icon button) */
+body[data-page="inicio"] a.btn.btn-icon{
+  border-radius: 14px;
+  border: 1px solid rgba(30,58,137,.24);
+  background: linear-gradient(180deg, rgba(30,58,137,.12) 0%, rgba(30,58,137,.06) 100%);
+  box-shadow: 0 10px 18px rgba(2,6,23,.10);
+}
+
+body[data-page="inicio"] a.btn.btn-icon:hover{
+  background: linear-gradient(180deg, rgba(30,58,137,.18) 0%, rgba(30,58,137,.08) 100%);
+  transform: translateY(-1px);
+}
+
+body[data-page="inicio"] a.btn.btn-icon:active{
+  transform: translateY(0px);
+}
+
+body[data-page="inicio"] a.btn.btn-icon .btn-ico{
+  filter: saturate(1.05);
+}
+
+/* Footer más prolijo */
+body[data-page="inicio"] main.inicio-main > footer.container{
+  margin-top: 12px;
+  color: rgba(15,23,42,.75);
+}
+
+/* =========================================================
+   INICIO · Mejora ícono/botón Asignar (mantiene Opción B)
+   - Recolorea el ícono a navy
+   - Agrega un “badge +” sutil (override de ::after deshabilitado)
+   ========================================================= */
+body[data-page="inicio"] a.btn.btn-icon .btn-ico{
+  /* Recolorea un ícono negro/gris a azul tipo #1E3A89 */
+  filter: brightness(0) saturate(100%) invert(18%) sepia(38%) saturate(2280%) hue-rotate(205deg) brightness(90%) contrast(95%) !important;
+  opacity: .95;
+}
+
+/* Badge “+” para reforzar la acción de asignar */
+body[data-page="inicio"] .td-actions a.btn.btn-icon::after{
+  content: "+" !important;
+  display: flex !important;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1;
+  color: #ffffff;
+  background: linear-gradient(180deg, rgba(30,58,137,.95) 0%, rgba(30,58,137,.78) 100%);
+  box-shadow: 0 6px 14px rgba(2,6,23,.22);
+  transform: translate(35%,-35%);
+  pointer-events: none;
+}
+
+/* Micro-feedback del ícono al hover */
+body[data-page="inicio"] a.btn.btn-icon:hover .btn-ico{
+  transform: scale(1.04);
+}
+
+
+/* ===== Evaluaciones: Botón Recargar (solo estilo, no función) ===== */
+body[data-page="realizar"] #rReload{
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.16);
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 10px 22px rgba(15,23,42,.10);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 900;
+  letter-spacing: .1px;
+  transition: background .15s ease, box-shadow .15s ease, transform .05s ease;
+}
+
+/* Ícono tipo "recargar" como en Flags (sin tocar el HTML) */
+body[data-page="realizar"] #rReload::before{
+  content: "";
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 1 .908-.418A4 4 0 1 0 8 4V1.5a.5.5 0 0 1 .854-.354l2.5 2.5a.5.5 0 0 1 0 .708l-2.5 2.5A.5.5 0 0 1 8 6.5V4z'/></svg>") center / contain no-repeat;
+          mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 1 .908-.418A4 4 0 1 0 8 4V1.5a.5.5 0 0 1 .854-.354l2.5 2.5a.5.5 0 0 1 0 .708l-2.5 2.5A.5.5 0 0 1 8 6.5V4z'/></svg>") center / contain no-repeat;
+  opacity: .95;
+}
+
+body[data-page="realizar"] #rReload:hover{
+  background: #fff;
+  box-shadow: 0 12px 26px rgba(15,23,42,.14);
+}
+
+body[data-page="realizar"] #rReload:active{
+  transform: translateY(1px);
+}
+
+/* =========================
+   Comparativos
+   ========================= */
+
+
+
+:root{--cmp-head-h:0px;--cmp-picked-h:0px;--cmp-thead1-h:0px;}
+
+body[data-page="comparativos"] main{ padding-top: 0; }
+
+body[data-page="comparativos"] .cmp-head{
+  /* Sección superior sticky (pegada al header principal) */
+  position: sticky;
+  top: var(--header-h, 0px);
+  z-index: 30;
+  background: #fff;
+  box-shadow: 0 10px 22px rgba(15,23,42,.10);
+  border-radius: 14px;
+
+  /* compactar altura */
+  margin: 0 0 6px;
+  padding: 10px 14px 2px;
+}
+
+
+body[data-page="comparativos"] .cmp-head .page-head{ margin-bottom: 6px; }
+/* En Comparativos, la topline va en una sola fila: no bajar las pills */
+body[data-page="comparativos"] .cmp-head .subhead{ margin-top: 0; }
+
+/* Botón Imprimir con ícono (mismo look que Flags) */
+body[data-page="comparativos"] .cmp-head .page-actions .btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+body[data-page="comparativos"] .cmp-head .page-actions .btn .ico{
+  width:16px;
+  height:16px;
+  flex:0 0 16px;
+}
+
+/* Comparativos: colorear los selectores según evaluado (al seleccionar) */
+body[data-page="comparativos"] .cmp-head .toolbar .filter.cmp-sel-e1{
+  border-color: var(--cmp-e1-ring);
+  box-shadow: 0 0 0 3px rgba(122,58,18,.16);
+}
+body[data-page="comparativos"] .cmp-head .toolbar .filter.cmp-sel-e1 label,
+body[data-page="comparativos"] .cmp-head .toolbar #cmpEval1.has-selection{
+  color: var(--cmp-e1);
+  font-weight: 900;
+}
+
+body[data-page="comparativos"] .cmp-head .toolbar .filter.cmp-sel-e2{
+  border-color: var(--cmp-e2-ring);
+  box-shadow: 0 0 0 3px rgba(75,44,155,.16);
+}
+body[data-page="comparativos"] .cmp-head .toolbar .filter.cmp-sel-e2 label,
+body[data-page="comparativos"] .cmp-head .toolbar #cmpEval2.has-selection{
+  color: var(--cmp-e2);
+  font-weight: 900;
+}
+
+/* Comparativos: los títulos de columnas (thead) deben coincidir con el color del selector */
+body[data-page="comparativos"] .cmp-table .cmp-group.cmp-group-e1{
+  background: var(--cmp-e1-soft);
+  color: var(--cmp-e1);
+}
+body[data-page="comparativos"] .cmp-table .cmp-group.cmp-group-e2{
+  background: var(--cmp-e2-soft);
+  color: var(--cmp-e2);
+}
+
+body[data-page="comparativos"] .cmp-filters{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 140px;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+body[data-page="comparativos"] .cmp-label{
+  display:block;
+  font-weight: 900;
+  color: rgba(15,23,42,.82);
+  margin-bottom: 4px;
+}
+
+body[data-page="comparativos"] .cmp-eval .select{
+  width: 100%;
+}
+
+body[data-page="comparativos"] .cmp-eval .search-wrap{ margin-top: 6px; }
+
+/* Reutiliza el look del buscador moderno */
+body[data-page="comparativos"] .search-wrap{
+  position: relative;
+}
+body[data-page="comparativos"] .search.search-sm{
+  height: 36px;
+  border-radius: 999px;
+  padding: 0 44px 0 14px;
+}
+body[data-page="comparativos"] .search-clear{
+  position:absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.14);
+  background: rgba(255,255,255,.9);
+  font-weight: 900;
+  display: none;
+  align-items:center;
+  justify-content:center;
+  cursor: pointer;
+}
+body[data-page="comparativos"] .search-clear:hover{ background:#fff; }
+
+body[data-page="comparativos"] .cmp-body{ margin-top: 0; }
+
+/* Anchos controlables para Comparativos */
+body[data-page="comparativos"]{
+  --cmp-col-id: 60px;
+  --cmp-col-cmp: 150px;
+  --cmp-table-max: 1400px;
+
+  /* Colores por evaluado (select + header) */
+  --cmp-e1: #7A3A12;
+  --cmp-e1-ring: rgba(122,58,18,.45);
+  /* IMPORTANTE: estos “soft” NO pueden ser rgba porque el thead es sticky
+     y si tienen alpha se transparenta al scrollear (se ve lo de abajo). */
+  --cmp-e1-soft: #EFE7E3;
+
+  --cmp-e2: #4B2C9B;
+  --cmp-e2-ring: rgba(75,44,155,.45);
+  --cmp-e2-soft: #E9E6F3;
+}
+
+body[data-page="comparativos"] .cmp-table-wrap{
+  /* Importante: NO usar overflow-x acá, porque vuelve "sticky" relativo al contenedor y el header queda caído.
+     Si necesitás scroll horizontal, se activa solo en pantallas chicas (ver media query). */
+  overflow: visible;
+  border-radius: 14px;
+  border: 1px solid rgba(15,23,42,.10);
+}
+
+
+body[data-page="comparativos"] .cmp-table{
+  width: 100%;
+  /* Mantener siempre la grilla 3 vs 3 sin que se “salga” del body.
+     Usamos layout fijo y reducimos anchos para que 6 columnas entren en el contenedor.
+     La columna de Item queda flexible (se adapta / hace wrap). */
+  min-width: 0;
+  table-layout: fixed;
+}
+
+body[data-page="comparativos"] .cmp-table thead th{
+  position: sticky;
+  background: #eef2ff;
+}
+
+/* Sticky en 2 niveles:
+   - Fila 1: nombres de evaluado (colspan) → pegada debajo del header + filtros
+   - Fila 2: evaluadores/valoraciones → pegada debajo de la fila 1 */
+body[data-page="comparativos"] .cmp-table thead tr:first-child th{
+  top: calc(var(--header-h, 0px) + var(--cmp-head-h, 0px) + var(--cmp-picked-h, 0px));
+  z-index: 22;
+}
+
+body[data-page="comparativos"] .cmp-table thead tr:nth-child(2) th{
+  top: calc(var(--header-h, 0px) + var(--cmp-head-h, 0px) + var(--cmp-picked-h, 0px) + var(--cmp-thead1-h, 0px));
+  z-index: 21;
+}
+
+body[data-page="comparativos"] .cmp-table th,
+body[data-page="comparativos"] .cmp-table td{
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(15,23,42,.10);
+  vertical-align: top;
+  /* Separadores verticales más marcados (celeste) */
+  border-right: 2px solid rgba(14,165,233,.55);
+}
+
+/* Separador fuerte entre Evaluado 1 y Evaluado 2 (doble línea oscura) */
+body[data-page="comparativos"] .cmp-table thead tr:first-child th.cmp-group-e1{
+  border-right: 6px double rgba(2,6,23,.85) !important;
+}
+body[data-page="comparativos"] .cmp-table thead tr:nth-child(2) > *:nth-child(3),
+body[data-page="comparativos"] .cmp-table tbody tr > *:nth-child(5){
+  border-right: 6px double rgba(2,6,23,.85) !important;
+}
+
+body[data-page="comparativos"] .cmp-table tr > *:first-child{
+  border-left: 2px solid rgba(14,165,233,.55);
+}
+
+body[data-page="comparativos"] .cmp-table .col-id{ width: 56px; text-align: center; font-weight: 900; color: rgba(15,23,42,.86); }
+/* La columna Item no fuerza ancho mínimo: se adapta al espacio disponible */
+body[data-page="comparativos"] .cmp-table .col-item{ min-width: 0; }
+/* 6 columnas de comparación (3 por evaluado). Ajustado para que 3 vs 3 entre en el body. */
+body[data-page="comparativos"] .cmp-table .col-val,
+body[data-page="comparativos"] .cmp-table .col-cmp{ width: 96px; text-align: center; }
+
+body[data-page="comparativos"] .cmp-table .cmp-group{
+  background: rgba(30,58,137,.10);
+  color: rgba(2,6,23,.90);
+  font-weight: 950;
+  text-align: center;
+  border-bottom: 1px solid rgba(15,23,42,.10);
+}
+
+body[data-page="comparativos"] .cmp-table .cmp-subhead{
+  background: #eef2ff;
+  font-weight: 900;
+  text-align: center;
+}
+
+body[data-page="comparativos"] .cmp-table .cmp-subhead .muted{ font-weight: 800; color: rgba(15,23,42,.55); }
+
+/* Secciones dentro de la tabla (igual que Resultados) */
+body[data-page="comparativos"] .cmp-table .r-sec-row td{
+  background: rgba(30,58,137,.08);
+  font-weight: 900;
+  color: rgba(2,6,23,.86);
+}
+
+@media (max-width: 980px){
+  body[data-page="comparativos"] .cmp-filters{
+    grid-template-columns: 1fr;
+  }
+
+  /* En pantallas chicas permitimos scroll horizontal. En ese caso, el sticky queda relativo al contenedor,
+     por eso el top debe ser 0 para que no se "caiga". */
+  body[data-page="comparativos"] .cmp-table-wrap{
+    overflow-x: auto;
+  }
+  body[data-page="comparativos"] .cmp-table thead th{
+    top: 0;
+  }
+}
+
+/* =========================
+   COMPARATIVOS (1 evaluado)
+   ========================= */
+
+.cmp-top-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+
+/* Selector en el centro del header (entre Estado y Año) */
+body[data-page="comparativos"] .cmp-mid-select{
+  flex: 1 1 auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 12px;
+  /* pedido: 2 selectores siempre lado a lado */
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+body[data-page="comparativos"] .cmp-mid-select .select{
+  /* que entren 2 sin saltar de línea */
+  flex: 0 1 auto;
+  width: clamp(180px, 22vw, 260px);
+  max-width: 260px;
+  font-size: 14px;
+}
+
+/* Ajuste fino del tamaño/anch... */
+body[data-page="comparativos"] .cmp-mid-select .select.select-lg{
+  width: clamp(180px, 22vw, 260px);
+  max-width: 260px;
+}
+
+/* Nombre elegido arriba (recuadro azul oscuro) */
+body[data-page="comparativos"] .cmp-picked-out-row{
+  /* Ya no se usa como sticky (ahora el sticky real es el thead con 2 filas). */
+  display:none;
+  justify-content:flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+body[data-page="comparativos"] .cmp-picked-out-row.is-visible{ display:flex; }
+
+body[data-page="comparativos"] .cmp-picked{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding: 10px 18px;
+  border-radius: 16px;
+  background: #1E3A89;
+  color: #fff;
+  font-weight: 900;
+  line-height: 1;
+  font-size: 16px;
+  max-width: 100%;
+}
+
+.cmp-one-selectbar{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:10px 0 6px;
+}
+
+.select-lg{
+  /* Ajuste de ancho: evitar que el desplegable sea demasiado grande */
+  box-sizing: border-box;
+  display: inline-block;
+  /* ancho “tipo nombre largo + margen” (más similar al de la derecha) */
+  width: 360px;
+  max-width: 92vw;
+  min-width: 260px;
+}
+
+/* En Comparativos: sin resaltado especial cuando hay selección (se muestra el nombre arriba) */
+body[data-page="comparativos"] .select-lg.has-selection{ font-weight: inherit; font-size: inherit; }
+
+.cmp-one .col-id{width:72px}
+.cmp-one .col-item{min-width:420px}
+.cmp-one .col-cmp{width:180px;text-align:center}
+
+/* =========================================================
+   Comparativos (pantalla)
+   - Achicar columnas de evaluaciones (col-cmp)
+   - Ensanchar Item (col-item) dejando el resto del espacio
+     disponible para la descripción.
+   Nota: se fuerza con !important para ganar a reglas previas.
+   ========================================================= */
+
+body[data-page="comparativos"] .cmp-table{
+  table-layout: fixed !important;
+  /* Evitar que la tabla se estire demasiado en pantallas anchas */
+  width: min(100%, var(--cmp-table-max, 1200px)) !important;
+  margin: 0 auto;
+}
+
+body[data-page="comparativos"] .cmp-table .col-id{
+  width: var(--cmp-col-id, 60px) !important;
+}
+
+/* Columnas de evaluaciones (th/td): fijar ancho real y evitar que se estiren */
+body[data-page="comparativos"] .cmp-table th.col-cmp,
+body[data-page="comparativos"] .cmp-table td.col-cmp{
+  width: var(--cmp-col-cmp, 90px) !important;
+  min-width: var(--cmp-col-cmp, 90px) !important;
+  max-width: var(--cmp-col-cmp, 90px) !important;
+}
+
+body[data-page="comparativos"] .cmp-table .col-item{
+  width: auto !important;
+}
+
+/* Header vacío (col-id / col-item): evitar que se vea como un bloque enorme */
+body[data-page="comparativos"] .cmp-table thead th.col-id,
+body[data-page="comparativos"] .cmp-table thead th.col-item{
+  background: #eef2ff !important;
+}
+
+/* Mantener separadores verticales pero suavizar borde superior/inferior del bloque vacío */
+body[data-page="comparativos"] .cmp-table thead th.col-id,
+body[data-page="comparativos"] .cmp-table thead th.col-item{
+  border-top-color: #cbd5e1 !important;
+}
+
+.cmp-evhead{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  line-height:1.05;
+}
+
+.cmp-evhead .cmp-ev-name{
+  font-weight:900;
+  color:#0f172a;
+}
+
+.cmp-evhead .cmp-ev-score{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-weight:800;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid #e2e8f0;
+  background:#f8fafc;
+}
+
+.cmp-evhead .cmp-ev-score .lbl{color:#334155;font-weight:800}
+.cmp-evhead .cmp-ev-score .val{font-weight:950}
+
+/* Puntaje (Comparativos): mismos rangos que Resultados */
+body[data-page="comparativos"] .cmp-evhead .cmp-ev-score.puntaje-v-rojo{
+  background:#d32f2f;
+  border-color:#d32f2f;
+  color:#fff;
+}
+body[data-page="comparativos"] .cmp-evhead .cmp-ev-score.puntaje-v-amarillo{
+  background:#fbc02d;
+  border-color:#fbc02d;
+  color:#111827;
+}
+body[data-page="comparativos"] .cmp-evhead .cmp-ev-score.puntaje-v-verdeclaro{
+  background:#a5d6a7;
+  border-color:#a5d6a7;
+  color:#111827;
+}
+body[data-page="comparativos"] .cmp-evhead .cmp-ev-score.puntaje-v-verdoscuro{
+  background:#1b5e20;
+  border-color:#1b5e20;
+  color:#fff;
+}
+
+/* Tags de valoración (colores) - Comparativos (igual que Resultados) */
+body[data-page="comparativos"] .r-tag{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.12);
+  background: rgba(15,23,42,.04);
+  white-space: nowrap;
+}
+body[data-page="comparativos"] .r-tag-bajo{ background: rgba(220,38,38,.12); border-color: rgba(220,38,38,.25); color: rgba(153,27,27,.95); }
+body[data-page="comparativos"] .r-tag-normal{ background: rgba(245,158,11,.14); border-color: rgba(245,158,11,.28); color: rgba(146,64,14,.98); }
+body[data-page="comparativos"] .r-tag-muy{ background: #ffe2b3; border-color: rgba(245,158,11,.38); color: rgba(146,64,14,.98); }
+body[data-page="comparativos"] .r-tag-exc{ background: rgba(22,163,74,.12); border-color: rgba(22,163,74,.22); color: rgba(20,83,45,.98); }
+
+/* C.P. tags (Comparativos) */
+body[data-page="comparativos"] .cp-tag{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.12);
+  white-space: nowrap;
+}
+body[data-page="comparativos"] .cp-tag-falta{
+  background:#dc2626;
+  border-color:#dc2626;
+  color:#fff;
+}
+body[data-page="comparativos"] .cp-tag-noeval{
+  background:#000;
+  border-color:#000;
+  color:#fff;
+}
+
+.cmp-one td.col-cmp{vertical-align:middle;text-align:center}
+
+/* En comparativos: celda vacía debe verse vacía (sin guiones) */
+.cmp-empty{color:transparent}
+
+@media (max-width: 980px){
+  .cmp-one .col-item{min-width:280px}
+  .cmp-one .col-cmp{width:auto}
+}
+
+/* ===== AJUSTE EXTRA: reducir espacio arriba del nombre azul (Comparativos) ===== */
+body[data-page="comparativos"] .cmp-picked-out-row{
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 4px !important;
+}
+
+/* Si el mensaje de estado está visible, que no empuje de más */
+body[data-page="comparativos"] #cmpMsg{ margin-bottom: 4px !important; }
+
+
+/* ===== AJUSTE EXTRA 2: reducir aún más el espacio arriba del nombre azul (Comparativos) ===== */
+body[data-page="comparativos"] .cmp-body{
+  padding-top: 6px !important;
+}
+body[data-page="comparativos"] .cmp-picked-out-row{
+  padding-bottom: 2px !important;
+}
+body[data-page="comparativos"] #cmpMsg{ margin-bottom: 2px !important; }
+
+/* =========================================================
+   Asignaciones: filtros como Inicio, pero SIN flecha en selects
+   + botón Imprimir con ícono (como Flags)
+   ========================================================= */
+body[data-page="asignaciones"] .select{
+  /* Quitar completamente el chevron (custom + nativo) */
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-image: none !important;
+  background: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: right 6px center !important;
+  background-size: 0 !important;
+  padding-right: 2px !important; /* recupera espacio al quitar la flecha */
+}
+
+/* Edge/IE legacy */
+body[data-page="asignaciones"] .select::-ms-expand{ display:none; }
+
+/* Asignaciones: asegurar tamaño del ícono del botón Imprimir (como Flags) */
+body[data-page="asignaciones"] .page-actions .btn .ico{
+  width:16px !important;
+  height:16px !important;
+  display:block;
+}
+
+body[data-page="asignaciones"] .page-actions .btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+body[data-page="asignaciones"] .page-actions .btn .ico{
+  width:16px;
+  height:16px;
+  flex:0 0 16px;
+}
+
+
+/* Comparativos: NO mostrar pills de nombres arriba (se eliminan) */
+body[data-page="comparativos"] .cmp-picked-out-row,
+body[data-page="comparativos"] .cmp-picked{
+  display:none !important;
+}

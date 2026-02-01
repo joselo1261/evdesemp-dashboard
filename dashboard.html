@@ -3,6 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+  // Si se abre directo en una pestaña (no embebido), no mostrar el dashboard
+  if (window.top === window.self) {
+    document.addEventListener("DOMContentLoaded", () => {
+      document.body.innerHTML = `
+        <div style="font-family:system-ui; padding:24px;">
+          <h2>Acceso restringido</h2>
+          <p>Este dashboard se visualiza únicamente desde Power BI.</p>
+        </div>`;
+    });
+  }
+  </script>
   <title>Dashboard · RRHH</title>
   <link rel="stylesheet" href="styles.css" />
   <style>

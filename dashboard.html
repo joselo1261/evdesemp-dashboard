@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard · RRHH</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <style>
     .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
     .brand-logo{height:42px !important;max-height:42px !important;width:auto !important;max-width:320px !important;display:block}
@@ -154,6 +155,20 @@ body[data-page="dashboard"] .dash-goto-select{ min-width: 200px; }
 </head>
 
 <body data-page="dashboard">
+  <header>
+    <div class="container header-row">
+      <a class="brand" href="inicio.html" aria-label="FACORSA">
+        <img class="brand-logo" src="logo-white.png" alt="FACORSA" />
+      </a>
+      <nav aria-label="Navegacion">
+        <a class="nav-link" href="inicio.html">Inicio</a>
+        <a class="nav-link" href="resultados.html">Resultados</a>
+        <a class="nav-link" href="comparativos.html">Comparativos</a>
+        <a class="nav-link" href="dashboard.html">Dashboard</a>
+      </nav>
+    </div>
+  </header>
+
   <main class="container">
     <section class="card" aria-labelledby="t">
 <div class="page-head">
@@ -344,7 +359,17 @@ body[data-page="dashboard"] .dash-goto-select{ min-width: 200px; }
       <!-- Abajo: 3 columnas -->
       <div class="dash-bottom-3" style="margin-top:14px">
         <section class="card" id="secBottomCompletas">
-          <h2>Completas</h2>
+          <div class="dash-card-head">
+            <div class="dash-card-head-left">
+              <h2 style="margin:0;">Completas</h2>
+              <div class="dash-ok-controls" aria-label="Acciones Completas">
+                <select id="dOkEvalSeg" class="dash-ok-seg" aria-label="Seleccionar evaluador"></select>
+                <button id="dOkByEvalMail" class="btn-icon dash-ok-mail" type="button" title="Abrir envío por mail" disabled>
+                  <i class="bi bi-envelope-fill" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
           <div class="table-tools">
             <input id="dOkSearch" class="search table-search" type="search" placeholder="Buscar evaluado..." autocomplete="off" />
           </div>
@@ -479,6 +504,56 @@ body[data-page="dashboard"] .dash-goto-select{ min-width: 200px; }
     </div>
   </div>
 
+
+
+  <!-- Modal: Completas por evaluador -->
+  <div id="dByEvalBackdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="dByEvalTitle">
+      <div class="modal-head">
+        <div class="modal-head-left">
+          <div class="modal-title" id="dByEvalTitle">Completas por evaluador</div>
+          <div class="modal-sub" id="dByEvalSub">—</div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="dByEvalSend" type="button" title="Abrir correo en Outlook" style="display:none;"><span style="display:inline-flex;align-items:center;gap:8px;"><span aria-hidden="true">✉️</span><span>Enviar</span></span></button>
+          <button class="btn btn-ghost" id="dByEvalClose" type="button" aria-label="Cerrar">✕</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
+          <label class="field inline" style="margin:0;">
+            <span>Evaluador</span>
+            <select id="dByEvalSelect" class="select" aria-label="Seleccionar evaluador">
+              <option value="">—</option>
+            </select>
+          </label>
+          <span class="muted" id="dByEvalEmail" style="font-weight:700;"></span>
+        </div>
+
+        <div class="table-area" style="max-height: 62vh; overflow: auto;">
+          <table class="compact-table">
+            <thead>
+              <tr>
+                <th>Evaluado</th>
+                <th>Promedio</th>
+              </tr>
+            </thead>
+            <tbody id="dByEvalTbody"></tbody>
+          </table>
+        </div>
+
+        <div id="dByEvalEmpty" class="muted" style="display:none; padding: 10px 2px;">
+          No hay evaluaciones completas para este evaluador con los filtros actuales.
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn" id="dByEvalClose2" type="button">Cerrar</button>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>
